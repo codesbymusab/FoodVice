@@ -1,0 +1,130 @@
+---
+
+# 🍔 FoodVice – Food Discovery & Community Platform
+
+FoodVice is a **full-stack food discovery and community application** built as a semester project. It combines restaurant discovery, social engagement, and AI-powered recommendations into one platform. Designed with **hexagonal architecture** on the backend, it demonstrates scalable system design and modern development practices.
+
+---
+
+## 🚀 Key Features
+- **Restaurant Discovery with Google Maps** – Interactive map-based search with filters for cuisine, rating, and distance.  
+- **AI Recommendations** – Personalized food and restaurant suggestions powered by integrated AI services.  
+- **Chatbot Assistant** – Conversational interface to guide users in exploring restaurants and communities.  
+- **Food Reels** – Short food-related videos with likes, comments, shares, and saves.  
+- **Community Forums** – Join communities, create threads, share recipes, and discuss food culture.  
+- **Moderation Module** – Tools for moderators to approve/reject posts, manage communities, and maintain quality.  
+- **Admin Module** – Administrative dashboards for managing users, restaurants, and system analytics.  
+- **Profiles & Reviews** – User trust scores, badges, saved restaurants, and review tracking.  
+
+---
+
+## 🛠️ Tech Stack
+- **Frontend:** React + TypeScript, Vite, TailwindCSS  
+- **Backend:** Node.js, Express.js, Hexagonal Architecture  
+- **Database:** MongoDB with GeoStationary Queries
+- **Storage:** Firebase
+- **Authentication:** JWT, Google OAuth  
+- **APIs:** Google Maps API,Groq API
+- **Deployment:** Vercel (Frontend), Railway (Backend)  
+
+---
+
+## 📂 Project Structure
+
+### Frontend
+```
+frontend/
+│── src/
+│   ├── components/       # Reusable UI components
+│   ├── pages/            # Page-level views (Explore, Reels, Community, Profile)
+│   ├── hooks/            # Custom React hooks
+│   ├── services/         # API calls and integrations
+│   ├── context/          # Global state management
+│   └── assets/           # Images, icons, styles
+│── public/
+│── package.json
+```
+
+### Backend (Hexagonal Architecture)
+```
+backend/
+│── src/
+│   ├── domain/           # Core business logic (entities, repositories, services)
+│   ├── application/      # Use cases (AI recommendations, moderation workflows)
+│   ├── infrastructure/   # Database, external APIs, Express server
+│   ├── adapters/         # Controllers, routes, middleware
+│   └── config/           # Environment, constants
+│── tests/                # Unit and integration tests
+│── package.json
+```
+
+---
+
+## 📸 Screenshots
+
+### Sign-Up Page  
+
+<img width="1911" height="975" alt="Screenshot 2026-06-08 105642" src="https://github.com/user-attachments/assets/5312c10f-b831-4955-a421-691768df8b1e" />
+
+### Home Page
+
+<img width="584" height="973" alt="Screenshot 2026-06-08 105317" src="https://github.com/user-attachments/assets/db82fe87-980f-493d-a405-f6265a7d085d" />
+
+
+### User Profile  
+
+<img width="934" height="971" alt="Screenshot 2026-06-08 105523" src="https://github.com/user-attachments/assets/6502975f-e5a9-4a71-a2c7-cb7a2c48d3c2" />
+
+### Community Section  
+
+<img width="1911" height="972" alt="Screenshot 2026-06-08 105408" src="https://github.com/user-attachments/assets/713b2e27-c7f9-43ea-8261-2099e068559b" />
+
+### Reels Section  
+
+<img width="1912" height="971" alt="Screenshot 2026-06-08 105356" src="https://github.com/user-attachments/assets/72803a2b-c81e-4812-8fba-512fd4d63a90" />
+
+### Restaurant Discovery  
+
+<img width="1903" height="971" alt="Screenshot 2026-06-08 105330" src="https://github.com/user-attachments/assets/8553e1ba-c6b7-4fa3-8f4c-4b59e2f6c484" />
+
+<img width="1907" height="970" alt="Screenshot 2026-06-08 105339" src="https://github.com/user-attachments/assets/c671f836-9f52-4e82-bcca-084dbf62cc2b" />
+
+---
+
+## 📖 How to Run
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/codesbymusab/food-vice.git
+   ```
+2. Install dependencies:
+   ```bash
+   cd food-vice/frontend && npm install
+   cd food-vice/backend && npm install
+   ```
+3. Run frontend:
+   ```bash
+   npm run dev
+   ```
+4. Run backend:
+   ```bash
+   npm start
+   ```
+5. Open the app at `http://localhost:5173`.
+
+---
+
+## 🎯 Future Improvements
+- **Mobile App Version** (Flutter) for cross-platform access.  
+- **Advanced AI Recommendations** using collaborative filtering and sentiment analysis.  
+- **Analytics Dashboard** for admins to track engagement and restaurant performance.  
+- **Gamification** – badges, levels, and rewards for active users.  
+
+---
+
+## 👨‍💻 Contributors
+- **Muhammad Musab** – Developer & Architect  
+- **Muhammad Sanaan** - Contributor
+
+---
+
+Would you like me to also **add a “Demo Walkthrough” section** (step-by-step with screenshots) so recruiters can quickly visualize how a user flows through sign-up → discovery → community → reels?
