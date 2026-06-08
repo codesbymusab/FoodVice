@@ -79,6 +79,11 @@ backend/
 
 <img width="1911" height="972" alt="Screenshot 2026-06-08 105408" src="https://github.com/user-attachments/assets/713b2e27-c7f9-43ea-8261-2099e068559b" />
 
+<img width="1903" height="971" alt="Screenshot 2026-06-08 105424" src="https://github.com/user-attachments/assets/c1cf8a4e-5e98-4675-a102-2b021ec11894" />
+
+
+
+
 ### Reels Section  
 
 <img width="1912" height="971" alt="Screenshot 2026-06-08 105356" src="https://github.com/user-attachments/assets/72803a2b-c81e-4812-8fba-512fd4d63a90" />
@@ -127,4 +132,4 @@ backend/
 
 ---
 
-Would you like me to also **add a “Demo Walkthrough” section** (step-by-step with screenshots) so recruiters can quickly visualize how a user flows through sign-up → discovery → community → reels?
+
