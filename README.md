@@ -5,6 +5,11 @@
 FoodVice is a **full-stack food discovery and community application** built as a semester project. It combines restaurant discovery, social engagement, and AI-powered recommendations into one platform. Designed with **hexagonal architecture** on the backend, it demonstrates scalable system design and modern development practices.
 
 ---
+## 🔗 Live Link
+
+https://food-vice-d9gy.vercel.app
+
+---
 
 ## 🚀 Key Features
 - **Restaurant Discovery with Google Maps** – Interactive map-based search with filters for cuisine, rating, and distance.  
@@ -21,7 +26,7 @@ FoodVice is a **full-stack food discovery and community application** built as a
 ## 🛠️ Tech Stack
 - **Frontend:** React + TypeScript, Vite, TailwindCSS  
 - **Backend:** Node.js, Express.js, Hexagonal Architecture  
-- **Database:** MongoDB with GeoStationary Queries
+- **Database:** MongoDB with GeoSpatial Queries
 - **Storage:** Firebase
 - **Authentication:** JWT, Google OAuth  
 - **APIs:** Google Maps API,Groq API
@@ -99,10 +104,11 @@ backend/
 ## 📖 How to Run
 1. Clone the repository:
    ```bash
-   git clone https://github.com/codesbymusab/food-vice.git
+   git clone https://github.com/codesbymusab/FoodVice.git
    ```
 2. Install dependencies:
    ```bash
+   cd food-vice
    cd food-vice/frontend && npm install
    cd food-vice/backend && npm install
    ```
@@ -132,4 +138,7 @@ backend/
 
 ---
 
+## 📜 License
+This project is open-source and available under the MIT License.
 
+---
