@@ -6,8 +6,9 @@ const User = require('../models/User/UserModel')
 class ReelRepoImpl {
 
   async getReels(
-    limit = 10,
     userId,
+    cursor,
+    limit = 10,
     source = "all",
     tag = null,
 
@@ -143,13 +144,22 @@ class ReelRepoImpl {
       });
     }
 
+    if(cursor){
+      console.log(cursor)
+      pipeline.push(
+        {
+          $match: { createdAt: {$lte: new Date(cursor.createdAt)}}
+        }
+      )
+    }
+
     pipeline.push(
 
       { $sort: { createdAt: -1 } },
 
-      { $limit: limit },
+      { $limit: limit + 1 },
 
-
+      
       {
         $lookup: {
           from: "users",

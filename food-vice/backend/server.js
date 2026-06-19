@@ -18,7 +18,8 @@ const adminRoute = require('./interfaces/routes/adminRoute')
 const aiRoute = require('./interfaces/routes/aiRoute')
 const { verifyAuth } = require('./interfaces/middlewares/authMiddleware')
 const cookieParser = require('cookie-parser');
-const { testUploadReels, seedRestaurantImages, seedImages, run } = require('./app')
+const { testUploadReels, seedRestaurantImages, seedImages, run, fetchRestaurant, RatedRest, getRec } = require('./app')
+const { encodeCursor, decodeCursor } = require('./shared/utils/cursor')
 
 
 
@@ -75,3 +76,4 @@ app.use('/moderation', moderationRoute)
 app.use('/admin', adminRoute)
 app.use('/ai', aiRoute)
 
+getRec()

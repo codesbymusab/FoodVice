@@ -11,7 +11,7 @@ const SavedRestaurant = require('../models/Saves/SavedRestaurantModel')
 
 class RestaurantRepoImpl {
 
-    async getRecommended(location, filters, userId, limitCount = 5) {
+    async getRecommended(location, filters, userId, cursor, limit = 5) {
 
         const savedCuisineIds = await SavedRestaurant.aggregate([
             { $match: { uid: new mongoose.Types.ObjectId(userId) } },
@@ -31,6 +31,8 @@ class RestaurantRepoImpl {
 
 
         return await Location.aggregate([
+
+
             {
                 $geoNear: {
                     near: { type: "Point", coordinates: location },
@@ -145,15 +147,33 @@ class RestaurantRepoImpl {
                         : {})
                 }
             },
-            { $sort: { avgOverall: -1 } },
-            { $limit: limitCount }
+
+            cursor ? {
+                $match: {
+                    $expr: {
+                        $or: [
+                            { $lt: ["$avgOverall", cursor.avgOverall] },
+                            {
+                                $and: [
+                                    { $eq: ["$avgOverall", cursor.avgOverall] },
+                                    { $gte: ["$_id", new mongoose.Types.ObjectId(cursor._id)] }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            } :
+            { $match: {} },
+            { $sort: { avgOverall: -1, _id: 1 } },
+            { $limit: limit + 1 }
         ]).exec();
     }
 
 
-    async getTopRated(location, filters, userId, limitCount = 5) {
+    async getTopRated(location, filters, userId, cursor, limit = 5) {
 
         return await Location.aggregate([
+
             {
                 $geoNear: {
                     near: { type: "Point", coordinates: location },
@@ -172,6 +192,8 @@ class RestaurantRepoImpl {
                 }
             },
             { $unwind: "$restaurant" },
+
+
             {
                 $lookup: {
                     from: "reviews",
@@ -256,6 +278,7 @@ class RestaurantRepoImpl {
                     isSaved: { $gt: [{ $size: "$savedDocs" }, 0] }
                 }
             },
+
             {
                 $match: {
                     ...(filters.cuisine && filters.cuisine !== "All"
@@ -267,8 +290,23 @@ class RestaurantRepoImpl {
                         : {})
                 }
             },
-            { $sort: { avgOverall: -1 } },
-            { $limit: filters.limitCount ? filters.limitCount : limitCount }
+            cursor ? {
+                $match: {
+                    $expr: {
+                        $or: [
+                            { $lt: ["$avgOverall", cursor.avgOverall] },
+                            {
+                                $and: [
+                                    { $eq: ["$avgOverall", cursor.avgOverall] },
+                                    { $gte: ["$_id", new mongoose.Types.ObjectId(cursor._id)] }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            } :
+                { $match: {} }, { $sort: { avgOverall: -1, _id: 1 } },
+            { $limit: limit + 1 }
         ]).exec();
     }
 

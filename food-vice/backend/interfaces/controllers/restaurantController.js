@@ -12,7 +12,7 @@ const GetSavedRestaurants = require('../../application/use-cases/saves/GetSavedR
 const GetNearbyyRestaurants = require('../../application/use-cases/restaurants/GetNearbyRest')
 const RestaurantViewModel = require('../../infrastructure/database/mongodb/models/Restaurant/RestaurantViewModel')
 const GetTrendingRestaurants = require('../../application/use-cases/restaurants/GetTrendingRestaurants')
-const mongoose=require('mongoose')
+const mongoose = require('mongoose')
 
 exports.recommendedRest = async (req, res) => {
 
@@ -20,7 +20,7 @@ exports.recommendedRest = async (req, res) => {
 
         let location = undefined
 
-        const { lat, lon, cuisine, price, rating, dist, userId } = req.query;
+        const { lat, lon, cuisine, price, rating, dist, userId, cursor, limit } = req.query;
 
         const filters = {
             cuisine: cuisine || "All",
@@ -42,11 +42,20 @@ exports.recommendedRest = async (req, res) => {
             }
         }
 
+        let limitNum=undefined
+
+        if(limit && limit!=='undefined'){
+            limitNum=Number.parseInt(limit)
+            if(Number.isNaN(limitNum)){
+                limitNum=undefined
+            }
+        }
+
         const restRepo = new RestaurantRepoImpl()
         const mediaRepo = new MediaRepoImpl()
 
         const getRecRest = new GetRecommendedRestaurants(restRepo, mediaRepo)
-        const result = await getRecRest.execute({ location: location, filters: filters, userId: userId })
+        const result = await getRecRest.execute({ location: location, userId, cursor, limit:limitNum})
 
         if (result) {
             return res.status(200).json({ details: result });
@@ -69,14 +78,14 @@ exports.topRatedRest = async (req, res) => {
 
         let location = undefined
 
-        const { lat, lon, cuisine, price, rating, dist, userId, limitCount } = req.query;
+        const { lat, lon, cuisine, price, rating, dist, userId, cursor, limit } = req.query;
 
         const filters = {
             cuisine: cuisine || "All",
             price: price || "",
             rating: rating ? Number(rating) : 0,
             distance: dist ? Number(dist) : 50,
-            limitCount: limitCount ? Number(limitCount) : 5
+
         };
 
 
@@ -92,11 +101,19 @@ exports.topRatedRest = async (req, res) => {
             }
         }
 
+        let limitNum = undefined
+
+        if (limit && limit != 'undefined') {
+            limitNum = Number.parseInt(limit)
+            if (Number.isNaN(limitNum)) {
+                limitNum = undefined
+            }
+        }
         const restRepo = new RestaurantRepoImpl()
         const mediaRepo = new MediaRepoImpl()
 
         const getTopRest = new GetTopRatedyRestaurants(restRepo, mediaRepo)
-        const result = await getTopRest.execute({ location: location, filters: filters, userId: userId })
+        const result = await getTopRest.execute({ location: location, userId, cursor, limit:limitNum})
 
         if (result) {
             return res.status(200).json({ details: result });
@@ -303,67 +320,67 @@ exports.restPhotos = async (req, res) => {
 
 
 
-exports.savedRestaurants=async (req, res) => {
-  try {
-    const { userId } = req.query;
-    const restRepo=new RestaurantRepoImpl()
-    const getSavedRestaurants = new GetSavedRestaurants(restRepo);
+exports.savedRestaurants = async (req, res) => {
+    try {
+        const { userId } = req.query;
+        const restRepo = new RestaurantRepoImpl()
+        const getSavedRestaurants = new GetSavedRestaurants(restRepo);
 
-    const result = await getSavedRestaurants.execute({ userId: userId });
-    res.json(result);
-  } catch (err) {
-    console.error(err);
-    return res.status(400).json({ error: err.message });
-  }
+        const result = await getSavedRestaurants.execute({ userId: userId });
+        res.json(result);
+    } catch (err) {
+        console.error(err);
+        return res.status(400).json({ error: err.message });
+    }
 }
 
 
 
-exports.trendingRestaurants  = async (req, res) => {
-  try {
-    const { lat, lon, maxDistance, limit } = req.query;
-    let location = null;
-    if (lat && lon) {
-      const latNum = parseFloat(lat);
-      const lonNum = parseFloat(lon);
-      if (!Number.isNaN(latNum) && !Number.isNaN(lonNum)) location = [lonNum, latNum];
-    }
-    const restRepo=new RestaurantRepoImpl()
-    const mediaRepo=new MediaRepoImpl()
-    const getTrending=new GetTrendingRestaurants(restRepo,mediaRepo)
-    const data = await getTrending.execute({
-      userId: req.query.userId || null,
-      limit: limit ? Number(limit) : 5,
-      location,
-      maxDistance: maxDistance ? Number(maxDistance) : 50
-    });
+exports.trendingRestaurants = async (req, res) => {
+    try {
+        const { lat, lon, maxDistance, limit } = req.query;
+        let location = null;
+        if (lat && lon) {
+            const latNum = parseFloat(lat);
+            const lonNum = parseFloat(lon);
+            if (!Number.isNaN(latNum) && !Number.isNaN(lonNum)) location = [lonNum, latNum];
+        }
+        const restRepo = new RestaurantRepoImpl()
+        const mediaRepo = new MediaRepoImpl()
+        const getTrending = new GetTrendingRestaurants(restRepo, mediaRepo)
+        const data = await getTrending.execute({
+            userId: req.query.userId || null,
+            limit: limit ? Number(limit) : 5,
+            location,
+            maxDistance: maxDistance ? Number(maxDistance) : 50
+        });
 
-    return res.status(200).json({ details: data });
-  } catch (err) {
-    console.error("trending error:", err);
-    return res.status(500).json({ message: err.message });
-  }
+        return res.status(200).json({ details: data });
+    } catch (err) {
+        console.error("trending error:", err);
+        return res.status(500).json({ message: err.message });
+    }
 };
 
 
 exports.postView = async (req, res) => {
-  try {
-    const restaurantId = req.params.id;
-    const { userId, meta } = req.body;
+    try {
+        const restaurantId = req.params.id;
+        const { userId, meta } = req.body;
 
-    if (!restaurantId) return res.status(400).json({ message: "restaurant id required" });
-    if (!userId) return res.status(400).json({ message: "userId required" });
+        if (!restaurantId) return res.status(400).json({ message: "restaurant id required" });
+        if (!userId) return res.status(400).json({ message: "userId required" });
 
-    const view = new RestaurantViewModel({
-      restaurantId: new mongoose.Types.ObjectId(restaurantId),
-      uid: new mongoose.Types.ObjectId(userId),
-      meta: meta || {}
-    });
+        const view = new RestaurantViewModel({
+            restaurantId: new mongoose.Types.ObjectId(restaurantId),
+            uid: new mongoose.Types.ObjectId(userId),
+            meta: meta || {}
+        });
 
-    await view.save();
-    return res.status(201).json({ message: "view recorded" });
-  } catch (err) {
-    console.error("postView error:", err);
-    return res.status(500).json({ message: err.message });
-  }
+        await view.save();
+        return res.status(201).json({ message: "view recorded" });
+    } catch (err) {
+        console.error("postView error:", err);
+        return res.status(500).json({ message: err.message });
+    }
 };

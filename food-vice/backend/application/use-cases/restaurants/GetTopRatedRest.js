@@ -1,3 +1,4 @@
+const { encodeCursor, decodeCursor, cursorPaginateByID } = require("../../../shared/utils/cursor");
 const { isRestaurantOpen } = require("../../../shared/utils/isRestaurantOpen");
 const { openingTime } = require("../../../shared/utils/openingTime");
 
@@ -20,8 +21,14 @@ class GetTopRatedyRestaurants {
             throw new  Error('UserId is required')
         }
 
-        const result = await this.restaurantRepo.getTopRated(data.location,data.filters,data.userId)
+        let limit = data.limit 
 
+        if(data.limit && data.limit>100){
+            limit=100
+        }
+       
+        const result = await this.restaurantRepo.getTopRated(data.location,data.filters,data.userId,data.cursor ? decodeCursor(data.cursor) : undefined ,limit)
+      
         if (result) {
 
 
@@ -32,19 +39,21 @@ class GetTopRatedyRestaurants {
                 const media = await this.mediaRepo.getByOwnerId({ownerId:result[i]._id})
                
                 if (media) {
-                    result[i]['media'] = media
+                    result[i].media = media
                 }
-                const isOpen = isRestaurantOpen(result[i]['openingHours'])
+                const isOpen = isRestaurantOpen(result[i].openingHours)
 
-                result[i]['isOpen'] = isOpen
+                result[i].isOpen = isOpen
 
-                const time = openingTime(result[i]['openingHours'])
+                const time = openingTime(result[i].openingHours)
                 if (time) {
-                    result[i]['openingTime'] = time
+                    result[i].openingTime = time
                 }
             }
         }
-        return result
+
+        return cursorPaginateByID(result,limit) 
+        
 
     }
 
