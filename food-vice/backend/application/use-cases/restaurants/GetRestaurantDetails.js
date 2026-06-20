@@ -57,7 +57,7 @@ class GetRestaurantDetails {
             this.restaurantRepo.getLabels(restaurant._id),
             this.reviewRepo.getRestaurantRating(restaurant._id),
             this.reviewRepo.getReviews({restId:restaurant._id,userId:userId}),
-            this.reviewRepo.getReviews({restId:restaurant._id,userId:userId,limitCount:1,currentUser:true}),
+            this.reviewRepo.getReviews({restId:restaurant._id,userId:userId,limit:1,currentUser:true}),
             this.saveRepo.getByRestId({restId:restaurant._id,userId:data.userId})
         
         ]);

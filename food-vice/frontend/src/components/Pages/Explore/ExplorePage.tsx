@@ -5,7 +5,7 @@ import ExploreMapView from './ExploreMapView';
 import { useAuth } from '../../../context/AuthContext';
 import { useAppLocation } from '../../../context/LocationContext';
 import { ErrorScreen, SkeletonRestaurantGrid, OperationLoadingDialog } from '../../Shared/Feedback';
-import { fetchTopRatedRestaurants as loadTopRatedRestaurantsAPI, fetchRecommendedRestaurants as loadRecommendedRestaurantsAPI } from '../../../apis/restaurants';
+import { fetchTopRatedRestaurants as loadTopRatedRestaurantsAPI, fetchRecommendedRestaurants as loadRecommendedRestaurantsAPI, type cursorPagination } from '../../../apis/restaurants';
 import { fetchCuisines } from '../../../apis/cuisines';
 import { SearchBar } from '../../SearchBar';
 import { ExploreChatBot } from './ExploreChatBot';
@@ -29,6 +29,8 @@ function ExplorePage() {
   const { location, loading: locationLoading, error: locationError, fetchLocation } = useAppLocation();
   const [topRatedRestaurants, setTopRatedRestaurants] = useState<TopRatedRestaurant[] | null>(null);
   const [recommendedRestaurants, setRecommendedRestaurants] = useState<RecommendedRestaurant[] | null>(null);
+  const [topRatedPagination,setTopRatedPagination]=useState<cursorPagination|null>(null)
+  const [recommendedPagination,setRecommendedPagination]=useState<cursorPagination|null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -50,8 +52,14 @@ function ExplorePage() {
   
   async function loadTopRatedRestaurants(location: [number, number] | null) {
     try {
-      const details = await loadTopRatedRestaurantsAPI({ userId: user?.userId ?? '', filters, location });
-      setTopRatedRestaurants(details ?? null);
+      const result = await loadTopRatedRestaurantsAPI({ userId: user?.userId ?? '', filters, location });
+      if(topRatedPagination?.cursor && result){
+        setTopRatedRestaurants([...recommendedRestaurants!,...result!.data])
+      }
+      else{
+        setTopRatedRestaurants(result?.data ?? null);
+      }
+      setTopRatedPagination(result?.pagination ?? null) 
     } catch (error) {
       console.error(error);
       setError("Unable to load top rated restaurants. Please try again.");
@@ -62,8 +70,15 @@ function ExplorePage() {
 
   async function loadRecommendedRestaurants(location: [number, number] | null) {
     try {
-      const details = await loadRecommendedRestaurantsAPI({ userId: user?.userId ?? '', location, filters: null });
-      setRecommendedRestaurants(details ?? null);
+      
+      const result= await loadRecommendedRestaurantsAPI({ userId: user?.userId ?? '', location, filters: null,cursor: recommendedPagination?.cursor})
+      if(recommendedPagination?.cursor && result){
+        setRecommendedRestaurants([...recommendedRestaurants!,...result!.data])
+      }
+      else{
+        setRecommendedRestaurants(result?.data ?? null)
+      }
+      setRecommendedPagination(result?.pagination ?? null) 
     } catch (error) {
       console.error(error);
       setError("Unable to load recommended restaurants. Please try again.");
@@ -241,9 +256,7 @@ function ExplorePage() {
                     <span className="material-symbols-outlined text-primary">lightbulb</span>
                     Recommendations
                   </h2>
-                  <a className="text-primary font-bold text-sm hover:underline" href="#">
-                    View All
-                  </a>
+                 
                 </div>
                 {loading ? (
                   <SkeletonRestaurantGrid count={3} />
@@ -254,6 +267,12 @@ function ExplorePage() {
                     })}
                   </div>
                 )}
+                {recommendedPagination?.hasMore && <div className='flex items-center justify-center'>
+                  <button className="px-4 py-3  border-2 bg-white rounded-2xl border-primary text-primary font-bold text-sm hover:underline hover:scale-105" onClick={async ()=>loadRecommendedRestaurants(location)}>
+                    View More
+                  </button>
+                </div>}
+                
               </div>
 
               <div className="space-y-6 pt-6">
@@ -262,9 +281,7 @@ function ExplorePage() {
                     <span className="material-symbols-outlined text-primary">award_star</span>
                     Top Rated Near You
                   </h2>
-                  <a className="text-primary font-bold text-sm hover:underline" href="#">
-                    View All
-                  </a>
+                 
                 </div>
                 {loading ? (
                   <SkeletonRestaurantGrid count={3} />
@@ -294,7 +311,13 @@ function ExplorePage() {
                         />
                       ))}
                   </div>
+                  
                 )}
+                 {topRatedPagination?.hasMore && <div className='flex items-center justify-center'>
+                  <button className="px-4 py-3  border-2 bg-white rounded-2xl border-primary text-primary font-bold text-sm hover:underline hover:scale-105" onClick={async ()=>loadTopRatedRestaurants(location)}>
+                    View More
+                  </button>
+                </div>}
               </div>
             </>
             :

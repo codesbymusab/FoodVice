@@ -18,7 +18,7 @@ class SaveReel
 
         
         if(save){
-            console.log(save)
+            
             await this.saveRepo.unsaveReel(save._id)
             return 'Reel unsaved'
         }

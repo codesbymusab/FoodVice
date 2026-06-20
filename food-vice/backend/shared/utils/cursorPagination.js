@@ -3,7 +3,7 @@ const base64 = require('base64url')
 
 exports.encodeCursor = (obj) => {
     try {
-        console.log(obj)
+        console.log("encoded:",obj)
         return base64(JSON.stringify(obj))
     }
     catch (e) {
@@ -15,7 +15,7 @@ exports.encodeCursor = (obj) => {
 exports.decodeCursor = (cursor) => {
     try {
         const decoded = JSON.parse(base64.decode(cursor))
-        console.log(decoded)
+        console.log("Decoded:",decoded)
         return decoded
     }
     catch (e) {
@@ -25,9 +25,9 @@ exports.decodeCursor = (cursor) => {
 }
 
 exports.cursorPaginateRest = (data, limit = 5) => {
-
+    
     if (data.length === limit + 1) {
-        const cursorObj = { _id: data[limit]._id.toString(), avgOverall: data[limit].avgOverall.toFixed(2) }
+        const cursorObj = { _id: data[limit]._id.toString(), avgOverall: Number.parseFloat(data[limit].avgOverall.toFixed(2)) }
         return {
 
             data: data.slice(0, limit),

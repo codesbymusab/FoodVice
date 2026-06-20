@@ -4,40 +4,12 @@ import { UploadReelForm } from "./UploadForm";
 import { useAuth } from "../../../context/AuthContext";
 import { UploadProgressDialog } from "./ProgressDialouge";
 import { ErrorScreen, SkeletonReelGrid, SkeltonReelTagsCard } from "../../Shared/Feedback";
-import { fetchRecentReels, fetchFollowersReels, fetchPopularTags, uploadReel as uploadReelApi, saveReel as saveReelApi, toggleLikeReel as toggleLikeReelApi, fetchReelById, fetchSuggestedAccounts, type SuggestedAccount } from "../../../apis/reels";
+import { fetchRecentReels, fetchFollowersReels, fetchPopularTags, uploadReel as uploadReelApi, saveReel as saveReelApi, toggleLikeReel as toggleLikeReelApi, fetchReelById, fetchSuggestedAccounts, type SuggestedAccount, type Reel, type ReelTag } from "../../../apis/reels";
 import { useNavigate, useParams } from "react-router";
+import type { cursorPagination } from "../../../apis/restaurants";
 
 type ReelsMode = 'for-you' | 'following' | 'discover'
-export type ReelTag = {
 
-    _id: string,
-    name: string
-
-}
-export type Reel = {
-
-    _id: string,
-    title: string,
-    description: string,
-    tags:
-    ReelTag[]
-    ,
-    createdAt: string,
-    user: {
-        _id: string,
-        name: string,
-        username: string,
-        profilePhoto: string
-    },
-    likeCount: number,
-    commentCount: number,
-    saveCount: number,
-    isLikedByUser: boolean,
-    videoUrl: string,
-    isSavedByUser: boolean,
-    views: number
-
-}
 export function ReelsPage() {
 
     const params = useParams()
@@ -51,6 +23,8 @@ export function ReelsPage() {
     const [error, setError] = useState<string | null>(null)
     const [selectedtag, setSelectedTag] = useState<string | null>(params.id ? null : 'All')
     const [suggestedAccounts, setSuggestedAccounts] = useState<SuggestedAccount[] | null>(null)
+    const [reelsPagination, setReelsPagination] = useState<cursorPagination | null>(null)
+
     const navigate = useNavigate()
     const { user } = useAuth()
 
@@ -104,9 +78,13 @@ export function ReelsPage() {
         setError(null)
         try {
             setLoading(true)
-            const reels = await fetchRecentReels({ userId: user?.userId ?? '', tag: selectedtag });
-            setReels(reels ?? null)
-        
+            const result = await fetchRecentReels({ userId: user?.userId ?? '', tag: selectedtag,cursor:reelsPagination?.cursor });
+            if (reelsPagination?.cursor && result) {
+                setReels([ ...reels!, ...result!.data ]);
+            } else {
+                setReels(result?.data ?? null);
+            }
+            setReelsPagination(result?.pagination ?? null)
         } catch (error) {
             console.error(error);
             setError("Unable to load reels. Please try again.");
@@ -135,9 +113,14 @@ export function ReelsPage() {
         setError(null)
         try {
             setLoading(true)
-            const reels = await fetchFollowersReels({ userId: user?.userId ?? '', tag: selectedtag });
-            if (reels && reels.length > 0) {
-                setReels(reels);
+            const result = await fetchFollowersReels({ userId: user?.userId ?? '', tag: selectedtag,cursor: reelsPagination?.cursor });
+            if (result && result.data.length > 0) {
+                if (reelsPagination?.cursor) {
+                    setReels([ ...reels!, ...result!.data]);
+                } else {
+                    setReels(result?.data ?? null);
+                }
+                setReelsPagination(result?.pagination ?? null)
             } else {
                 await loadRecentReels();
             }
@@ -171,7 +154,7 @@ export function ReelsPage() {
         userId: string,
         reelId: string,
         currentLiked: boolean
-    ) { 
+    ) {
         setReels(prev =>
             prev
                 ? prev.map(r =>
@@ -237,7 +220,7 @@ export function ReelsPage() {
                             <div key={index} className="h-12 rounded-2xl bg-slate-100 animate-pulse dark:bg-slate-800" />
                         ))}
                     </div>
-                    
+
                 </aside>
 
                 <section className="flex-1 flex flex-col md:flex-row min-w-0 overflow-hidden">
@@ -297,7 +280,7 @@ export function ReelsPage() {
                                     <div key={account._id} className="flex items-center gap-3 px-3 cursor-pointer hover:scale-110" >
 
                                         <div className="size-8 rounded-full bg-slate-200 overflow-hidden">
-                                         <img className="w-full h-full object-cover" data-alt="Female chef portrait" src={account.profilePhoto} />
+                                            <img className="w-full h-full object-cover" data-alt="Female chef portrait" src={account.profilePhoto} />
                                         </div>
                                         <div className="flex-1 min-w-0 hover:text-primary" onClick={() => navigate(`/profile/${account._id}`)}>
                                             <p className="text-sm font-bold truncate ">{account.name}</p>
@@ -324,7 +307,11 @@ export function ReelsPage() {
 
                         }
 
-
+                        {reelsPagination?.hasMore && <div className='flex items-center justify-center'>
+                            <button className="px-4 py-3  mb-4 border-2 bg-white rounded-2xl border-primary text-primary font-bold text-sm hover:underline hover:scale-105" onClick={async () => loadRecentReels()}>
+                                View More
+                            </button>
+                        </div>}
 
                     </div>
                 }

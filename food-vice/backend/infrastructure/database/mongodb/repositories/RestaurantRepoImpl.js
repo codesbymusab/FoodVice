@@ -12,7 +12,7 @@ const SavedRestaurant = require('../models/Saves/SavedRestaurantModel')
 class RestaurantRepoImpl {
 
     async getRecommended(location, filters, userId, cursor, limit = 5) {
-
+       
         const savedCuisineIds = await SavedRestaurant.aggregate([
             { $match: { uid: new mongoose.Types.ObjectId(userId) } },
             {
@@ -170,8 +170,8 @@ class RestaurantRepoImpl {
     }
 
 
-    async getTopRated(location, filters, userId, cursor, limit = 5) {
-
+    async getTopRated(location, filters, userId, cursor, limit = 10) {
+  
         return await Location.aggregate([
 
             {

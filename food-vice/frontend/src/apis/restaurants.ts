@@ -2,6 +2,13 @@ import type { Filter } from "../components/Pages/Explore/ExplorePage";
 
 const API_BASE = import.meta.env.VITE_API_BASE
 
+export type cursorPagination= {
+        type: string,
+        hasMore: boolean,
+        cursor?: string,
+        limit: number
+}
+
 export type TopRatedRestaurant =
     {
         _id: string,
@@ -20,6 +27,7 @@ export type TopRatedRestaurant =
         latitude: number,
         longitude: number,
         isSaved: boolean
+        
 
     }
 
@@ -41,7 +49,7 @@ export type TrendingRestaurant =
     }
 
 
-export async function fetchTopRatedRestaurants({ userId, filters, location }: { userId: string, filters: Filter | null, location: [number, number] | null }) {
+export async function fetchTopRatedRestaurants({ userId, filters, location,cursor }: { userId: string, filters: Filter | null, location: [number, number] | null,cursor?:string }) : Promise<{data:RecommendedRestaurant[],pagination?: cursorPagination}| undefined> {
 
     const searchfilters = {
         cuisine: filters?.cuisine ?? 'All',
@@ -51,13 +59,14 @@ export async function fetchTopRatedRestaurants({ userId, filters, location }: { 
     }
     try {
         const res = await fetch(
-            `${API_BASE}/restaurant/toprated?lat=${location?.[0]}&lon=${location?.[1]}&cuisine=${searchfilters.cuisine}&price=${searchfilters.price}&rating=${searchfilters.rating}&dist=${searchfilters.dist}&userId=${userId}`,
+            `${API_BASE}/restaurant/toprated?lat=${location?.[0]}&lon=${location?.[1]}&cuisine=${searchfilters.cuisine}&price=${searchfilters.price}&rating=${searchfilters.rating}&dist=${searchfilters.dist}&userId=${userId}${cursor ? `&cursor=${cursor}`:""}`,
             { credentials: "include" }
         );
         if (res.ok) {
-            const { details } = await res.json();
-      
-            return details
+            
+            const result  = await res.json();
+            
+            return { data: result.data,pagination: result.pagination}
 
         }
     } catch (error) {
@@ -108,7 +117,7 @@ export async function fetchNearbyRestaurants({ userId, filters, location }: { us
     }
 }
 
-export async function fetchRecommendedRestaurants({ userId, filters, location }: { userId: string, filters: Filter | null, location: [number, number] | null }) {
+export async function fetchRecommendedRestaurants({ userId, filters, location,cursor }: { userId: string, filters: Filter | null, location: [number, number] | null, cursor?:string })  : Promise<{data:RecommendedRestaurant[],pagination?: cursorPagination}| undefined> {
     const searchfilters = {
         cuisine: filters?.cuisine ?? 'All',
         price: filters?.price ?? '',
@@ -118,19 +127,19 @@ export async function fetchRecommendedRestaurants({ userId, filters, location }:
 
     try {
         const res = await fetch(
-            `${API_BASE}/restaurant/recommended?lat=${location?.[0]}&lon=${location?.[1]}&cuisine=${searchfilters.cuisine}&price=${searchfilters.price}&rating=${searchfilters.rating}&dist=${searchfilters.dist}&userId=${userId}`,
+            `${API_BASE}/restaurant/recommended?lat=${location?.[0]}&lon=${location?.[1]}&cuisine=${searchfilters.cuisine}&price=${searchfilters.price}&rating=${searchfilters.rating}&dist=${searchfilters.dist}&userId=${userId}${cursor ? `&cursor=${cursor}`:""}`,
             { credentials: "include" }
         );
         if (res.ok) {
-            const { details } = await res.json();
-        
-            return details;
+            const result  = await res.json();
+           
+            return { data: result.data,pagination: result.pagination}
 
         }
     } catch (error) {
         console.error(error);
     }
-}
+} 
 
 export async function saveRestaurant({ userId, restId }: { userId: string, restId: string }) {
 

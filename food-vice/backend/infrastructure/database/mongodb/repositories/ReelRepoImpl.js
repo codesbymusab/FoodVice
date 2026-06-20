@@ -8,7 +8,7 @@ class ReelRepoImpl {
   async getReels(
     userId,
     cursor,
-    limit = 10,
+    limit = 5,
     source = "all",
     tag = null,
 

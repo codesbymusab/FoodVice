@@ -55,19 +55,19 @@ exports.recommendedRest = async (req, res) => {
         const mediaRepo = new MediaRepoImpl()
 
         const getRecRest = new GetRecommendedRestaurants(restRepo, mediaRepo)
-        const result = await getRecRest.execute({ location: location, userId, cursor, limit:limitNum})
+        const result = await getRecRest.execute({ location,filters, userId, cursor, limit:limitNum})
 
         if (result) {
-            return res.status(200).json({ details: result });
+            return res.status(200).json({ success:true, message:'Recommended Restaurants', ...result });
         }
 
-        return res.status(400).json({ message: 'Failed to load Restaurants' });
+        return res.status(400).json({success: false, message: 'Failed to load Restaurants' });
 
 
     }
     catch (error) {
         console.log(error)
-        return res.status(400).json({ message: error.message })
+        return res.status(400).json({success:false, message: error.message })
     }
 
 }
@@ -113,19 +113,19 @@ exports.topRatedRest = async (req, res) => {
         const mediaRepo = new MediaRepoImpl()
 
         const getTopRest = new GetTopRatedyRestaurants(restRepo, mediaRepo)
-        const result = await getTopRest.execute({ location: location, userId, cursor, limit:limitNum})
+        const result = await getTopRest.execute({ location,filters,userId, cursor, limit:limitNum})
 
         if (result) {
-            return res.status(200).json({ details: result });
+            return res.status(200).json({ success:true, message:'Top Rated Restaurants', ...result });
         }
 
-        return res.status(400).json({ message: 'Failed to load Restaurants' });
+        return res.status(400).json({ succes:false, message: 'Failed to load Restaurants' });
 
 
     }
     catch (error) {
         console.log(error)
-        return res.status(400).json({ message: error.message })
+        return res.status(400).json({ success:false, message: error.message })
     }
 
 }

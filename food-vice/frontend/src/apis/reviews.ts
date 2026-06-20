@@ -84,7 +84,7 @@ export async function fetchRecentReviews({ userId }: { userId: string }) {
         );
         if (res.ok) {
             const reviews = await res.json();
-            console.log(reviews)
+          
             return reviews
 
         }

@@ -51,7 +51,7 @@ class ReviewRepoImpl {
         ).exec()
     }
 
-    async getReviews({ restId, userId, cursor, limit, currentUser = false }) {
+    async getReviews({ restId, userId, cursor, limit = 3, currentUser = false }) {
         const matchStage = {
             status: "approved"
         };

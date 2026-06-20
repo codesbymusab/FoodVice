@@ -1,3 +1,5 @@
+import type { cursorPagination } from "./restaurants"
+
 export type ReelsMode = 'for-you' | 'following' | 'discover'
 export type ReelTag = {
 
@@ -29,6 +31,8 @@ export type Reel = {
     views: number
 
 }
+
+
 export type SuggestedAccount = {
 
     _id: string,
@@ -38,11 +42,11 @@ export type SuggestedAccount = {
 
 const API_BASE = import.meta.env.VITE_API_BASE
 
-export async function fetchRecentReels({ userId, tag }: { userId: string, tag: string | null }) {
+export async function fetchRecentReels({ userId, tag, cursor }: { userId: string, tag: string | null, cursor?:string }):Promise<{data:Reel[],pagination?: cursorPagination}| undefined>{
     try {
 
         const res = await fetch(
-            `${API_BASE}/reels/recent/reels?userId=${userId}&tag=${tag ?? 'All'}`,
+            `${API_BASE}/reels/recent/reels?userId=${userId}&tag=${tag ?? 'All'}${cursor ? `&cursor=${cursor}`:""}`,
             { credentials: "include" }
         );
         if (res.ok) {
@@ -68,7 +72,7 @@ export async function fetchReelById({ reelId, userId }: { userId: string, reelId
         );
         if (res.ok) {
             const reel = await res.json();
-            console.log(reel)
+          
             return reel
 
         }
@@ -210,11 +214,11 @@ export async function fetchSuggestedAccounts({ userId }: { userId: string }) {
 
 
 
-export async function fetchFollowersReels({ userId, tag }: { userId: string, tag: string | null }) {
+export async function fetchFollowersReels({ userId, tag, cursor }: { userId: string, tag: string | null, cursor?:string }):Promise<{data:Reel[],pagination?: cursorPagination}| undefined> {
     try {
 
         const res = await fetch(
-            `${API_BASE}/reels/followers/reels?userId=${userId}&tag=${tag ?? 'All'}`,
+            `${API_BASE}/reels/followers/reels?userId=${userId}&tag=${tag ?? 'All'}${cursor ? `&cursor=${cursor}`:""}`,
             { credentials: "include" }
         );
         if (res.ok) {

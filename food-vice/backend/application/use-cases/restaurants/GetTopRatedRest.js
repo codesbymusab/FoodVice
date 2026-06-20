@@ -1,4 +1,4 @@
-const { encodeCursor, decodeCursor, cursorPaginateByID } = require("../../../shared/utils/cursorPagination");
+const { decodeCursor, cursorPaginateRest } = require("../../../shared/utils/cursorPagination");
 const { isRestaurantOpen } = require("../../../shared/utils/isRestaurantOpen");
 const { openingTime } = require("../../../shared/utils/openingTime");
 
@@ -51,8 +51,8 @@ class GetTopRatedyRestaurants {
                 }
             }
         }
-
-        return cursorPaginateByID(result,limit) 
+        
+        return cursorPaginateRest(result,limit) 
         
 
     }

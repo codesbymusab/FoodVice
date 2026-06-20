@@ -39,33 +39,44 @@ exports.upload = async (req, res) => {
 
 exports.getRecent = async (req, res) => {
     try {
-        const limit = parseInt(req.query.limit) || 10;
+        const limit = req.query.limit;
         const userId = req.query.userId
-        const tag=req.query.tag ?? 'All'
-      
+        const tag = req.query.tag ?? 'All'
+        const cursor = req.query.cursor
         const reelRepo = new ReelRepoImpl()
         const getRecentReels = new GetRecentReels(reelRepo)
-        const reels = await getRecentReels.execute({ limit, userId, tag });
-        res.json(reels);
+        
+        let limitNum=undefined
+
+        if(limit && limit!=='undefined'){
+            limitNum=Number.parseInt(limit)
+            if(Number.isNaN(limitNum)){
+                limitNum=undefined
+            }
+        }
+
+        const result = await getRecentReels.execute({ limit:limitNum, userId, tag, cursor });
+
+        res.status(200).json({success:true,message:"Recent Reels",...result})
     } catch (err) {
         console.error(err);
-        return res.status(500).json({ error: err.message });
+        return res.status(500).json({success:false , message: err.message });
     }
 }
 
 exports.getFollowers = async (req, res) => {
     try {
-        const limit = parseInt(req.query.limit) || 5;
+        const limit = req.query.limit
         const userId = req.query.userId
-        const tag=req.query.tag ?? 'All'
-     
+        const tag = req.query.tag ?? 'All'
+        const cursor = req.query.cursor
         const reelRepo = new ReelRepoImpl()
         const getRecentReels = new GetFollowerReels(reelRepo)
-        const reels = await getRecentReels.execute({ limit, userId ,tag});
-        res.json(reels);
+        const result = await getRecentReels.execute({ limit:limitNum, userId, tag, cursor });
+       res.status(200).json({success:true,message:"Follower Reels",...result})
     } catch (err) {
         console.error(err);
-        return res.status(500).json({ error: err.message });
+        return res.status(500).json({ success:false, message: err.message });
     }
 }
 
@@ -78,12 +89,12 @@ exports.getPopularTags = async (req, res) => {
         res.json(tags);
     } catch (err) {
         console.error(err);
-        return res.status(500).json({ error: err.message });
+        return res.status(500).json({ success:false, message: err.message });
     }
 }
 
 
-exports.updateViews=async (req, res) => {
+exports.updateViews = async (req, res) => {
     try {
         const { reelId } = req.params;
         await ReelModel.updateOne(
@@ -99,11 +110,22 @@ exports.updateViews=async (req, res) => {
 
 exports.getUserReels = async (req, res) => {
     try {
-        const limit = parseInt(req.query.limit) || 5;
+        const limit = req.query.limit;
         const userId = req.params.userId
+        const cursor = req.query.cursor
         const reelRepo = new ReelRepoImpl()
         const getReels = new GetUserReels(reelRepo)
-        const reels = await getReels.execute({ limit, userId });
+
+        let limitNum=undefined
+
+        if(limit && limit!=='undefined'){
+            limitNum=Number.parseInt(limit)
+            if(Number.isNaN(limitNum)){
+                limitNum=undefined
+            }
+        }
+
+        const reels = await getReels.execute({ limit:limitNum, userId, cursor });
         res.json(reels);
     } catch (err) {
         console.error(err);
@@ -113,9 +135,9 @@ exports.getUserReels = async (req, res) => {
 
 exports.getById = async (req, res) => {
     try {
-        const reelId=req.params.reelId
+        const reelId = req.params.reelId
         const userId = req.params.userId
-       
+
         const reelRepo = new ReelRepoImpl()
         const getReel = new GetReel(reelRepo)
         const reel = await getReel.execute({ reelId, userId });
@@ -128,18 +150,18 @@ exports.getById = async (req, res) => {
 
 
 
-exports.suggestAccounts= async (req, res) => {
-  try {
-    const { userId } = req.query;
-    const limit = req.query.limit ? parseInt(req.query.limit, 5) : 5;
+exports.suggestAccounts = async (req, res) => {
+    try {
+        const { userId } = req.query;
+        const limit = req.query.limit ? parseInt(req.query.limit, 5) : 5;
 
-    const reelRepo = new ReelRepoImpl()
-    const suggestAcc=new SuggestAccounts(reelRepo)
-    const suggestions = await suggestAcc.execute(userId);
+        const reelRepo = new ReelRepoImpl()
+        const suggestAcc = new SuggestAccounts(reelRepo)
+        const suggestions = await suggestAcc.execute(userId);
 
-    return res.status(200).json({ suggestions });
-  } catch (error) {
-    console.error("Error suggesting accounts:", error);
-    return res.status(500).json({ error: "Failed to suggest accounts" });
-  }
+        return res.status(200).json({ suggestions });
+    } catch (error) {
+        console.error("Error suggesting accounts:", error);
+        return res.status(500).json({ error: "Failed to suggest accounts" });
+    }
 }
