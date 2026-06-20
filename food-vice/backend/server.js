@@ -18,8 +18,8 @@ const adminRoute = require('./interfaces/routes/adminRoute')
 const aiRoute = require('./interfaces/routes/aiRoute')
 const { verifyAuth } = require('./interfaces/middlewares/authMiddleware')
 const cookieParser = require('cookie-parser');
-const { testUploadReels, seedRestaurantImages, seedImages, run, fetchRestaurant, RatedRest, getRec } = require('./app')
-const { encodeCursor, decodeCursor } = require('./shared/utils/cursor')
+const { testUploadReels, seedRestaurantImages, seedImages, run, fetchRestaurant, RatedRest, getRec, rReviews } = require('./app')
+const { encodeCursor, decodeCursor } = require('./shared/utils/cursorPagination')
 
 
 
@@ -60,7 +60,7 @@ mongodbConfig.connectDB()
 
 app.use('/auth', authRoute)
 
-app.use(verifyAuth)
+
 
 app.use('/user', userRoute)
 app.use('/community', communityRoute)
@@ -76,4 +76,4 @@ app.use('/moderation', moderationRoute)
 app.use('/admin', adminRoute)
 app.use('/ai', aiRoute)
 
-getRec()
+

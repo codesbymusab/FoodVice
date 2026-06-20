@@ -1,4 +1,4 @@
-const { encodeCursor, decodeCursor, cursorPaginateByID } = require("../../../shared/utils/cursor");
+const { encodeCursor, decodeCursor, cursorPaginateByID } = require("../../../shared/utils/cursorPagination");
 const { isRestaurantOpen } = require("../../../shared/utils/isRestaurantOpen");
 const { openingTime } = require("../../../shared/utils/openingTime");
 

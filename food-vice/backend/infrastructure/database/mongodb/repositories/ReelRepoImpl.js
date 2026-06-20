@@ -145,7 +145,7 @@ class ReelRepoImpl {
     }
 
     if(cursor){
-      console.log(cursor)
+      
       pipeline.push(
         {
           $match: { createdAt: {$lte: new Date(cursor.createdAt)}}

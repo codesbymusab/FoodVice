@@ -51,9 +51,9 @@ class ReviewRepoImpl {
         ).exec()
     }
 
-    async getReviews({ restId, userId, limitCount = 5, currentUser = false }) {
+    async getReviews({ restId, userId, cursor, limit, currentUser = false }) {
         const matchStage = {
-            status:"approved"
+            status: "approved"
         };
         if (restId) matchStage.restaurantId = new mongoose.Types.ObjectId(restId);
         if (userId && currentUser) matchStage.uid = new mongoose.Types.ObjectId(userId);
@@ -61,8 +61,11 @@ class ReviewRepoImpl {
 
         return await RestaurantReviews.aggregate([
             { $match: matchStage },
+            
+            cursor ? { $match: { createdAt: { $lte: new Date(cursor.createdAt) } } } : {$match:{}},
+            
             { $sort: { createdAt: -1 } },
-            { $limit: limitCount },
+            { $limit: limit + 1 },
 
 
             {
@@ -162,11 +165,11 @@ class ReviewRepoImpl {
         ]).exec();
     }
 
-    async getRecentReviews({ limitCount = 3, userId, currentUser = false }) {
+    async getRecentReviews({ userId, cursor, limit = 3, currentUser = false }) {
 
 
         const matchStage = {
-            status:"approved"
+            status: "approved"
         }
 
         if (userId && currentUser) matchStage.uid = new mongoose.Types.ObjectId(userId);
@@ -174,6 +177,11 @@ class ReviewRepoImpl {
         return await RestaurantReviews.aggregate([
             { $match: matchStage },
 
+            cursor ? { $match: { createdAt: { $lte: new Date(cursor.createdAt) } } } : {$match:{}},
+            
+            { $sort: { createdAt: -1 } },
+            
+            { $limit: limit + 1 },
 
             {
                 $lookup: {
@@ -281,8 +289,7 @@ class ReviewRepoImpl {
                 },
 
             },
-            { $sort: { createdAt: -1 } },
-            { $limit: limitCount },
+            
 
         ]).exec();
     }

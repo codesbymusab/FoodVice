@@ -1,7 +1,7 @@
 const ReviewRestaurant = require("../../application/use-cases/reviews/ReviewRestaurant")
 const MediaRepoImpl = require("../../infrastructure/database/mongodb/repositories/MediaRepoImpl")
 const ReviewRepoImpl = require("../../infrastructure/database/mongodb/repositories/ReviewRepoImpl")
-const GetRestaurantReviews = require('../../application/use-cases/restaurants/GetRestaurantReviews')
+const GetRestaurantReviews = require('../../application/use-cases/reviews/GetRestaurantReviews')
 const GetRecentReviews = require("../../application/use-cases/reviews/GetRecentReviews")
 const GetUserReviews = require("../../application/use-cases/reviews/GetUserReviews")
 const StorageServiceImpl = require("../../infrastructure/services/FirebaseStorage/StorageServiceImp")
@@ -11,13 +11,23 @@ const StorageServiceImpl = require("../../infrastructure/services/FirebaseStorag
 exports.restReviews = async (req, res) => {
     try {
         const restId = req.params.restaurantId
-      
+        const { cursor,limit } = req.query
         const reviewRepo = new ReviewRepoImpl()
         const getReviews = new GetRestaurantReviews(reviewRepo)
-        const result = await getReviews.execute({ restId: restId })
 
-        if (result.reviews) {
-            return res.status(200).json(result.reviews);
+        let limitNum=undefined
+
+        if(limit && limit!=='undefined'){
+            limitNum=Number.parseInt(limit)
+            if(Number.isNaN(limitNum)){
+                limitNum=undefined
+            }
+        }
+
+        const result = await getReviews.execute({ restId,cursor,limit:limitNum })
+
+        if (result) {
+            return res.status(200).json(result);
         }
 
         return res.status(400).json({ message: 'Failed to load reviews' });
@@ -34,12 +44,21 @@ exports.recentReviews = async (req, res) => {
         
         const reviewRepo = new ReviewRepoImpl()
         const getrecentReviews = new GetRecentReviews(reviewRepo)
-        const userId=req.query.userId
-     
-        const result = await getrecentReviews.execute({userId:userId})
+        const { userId,cursor,limit } = req.query
+        
+        let limitNum=undefined
+
+        if(limit && limit!=='undefined'){
+            limitNum=Number.parseInt(limit)
+            if(Number.isNaN(limitNum)){
+                limitNum=undefined
+            }
+        }
+
+        const result = await getrecentReviews.execute({userId,cursor,limit:limitNum})
 
         if (result) {
-            return res.status(200).json(result.reviews);
+            return res.status(200).json(result);
         }
 
         return res.status(400).json({ message: 'Failed to load recent reviews' });
@@ -54,13 +73,23 @@ exports.recentReviews = async (req, res) => {
 exports.userReviews = async (req, res) => {
     try {
         
-        const userId=req.params.userId
+        const userId = req.params.userId
+        const {cursor,limit}=req.query
         const reviewRepo = new ReviewRepoImpl()
         const getuserReviews = new GetUserReviews(reviewRepo)
-        const result = await getuserReviews.execute({userId})
+
+        let limitNum=undefined
+
+        if(limit && limit!=='undefined'){
+            limitNum=Number.parseInt(limit)
+            if(Number.isNaN(limitNum)){
+                limitNum=undefined
+            }
+        }
+        const result = await getuserReviews.execute({userId,cursor,limit:limitNum})
 
         if (result) {
-            return res.status(200).json(result.reviews);
+            return res.status(200).json(result);
         }
 
         return res.status(400).json({ message: 'Failed to load user reviews' });

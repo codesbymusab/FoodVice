@@ -1,4 +1,4 @@
-const { cursorPaginateReels, decodeCursor } = require("../../../shared/utils/cursor");
+const { cursorPaginateReels, decodeCursor } = require("../../../shared/utils/cursorPagination");
 
 class GetUserReels {
 
