@@ -3,7 +3,6 @@ const base64 = require('base64url')
 
 exports.encodeCursor = (obj) => {
     try {
-        console.log("encoded:",obj)
         return base64(JSON.stringify(obj))
     }
     catch (e) {
@@ -15,7 +14,6 @@ exports.encodeCursor = (obj) => {
 exports.decodeCursor = (cursor) => {
     try {
         const decoded = JSON.parse(base64.decode(cursor))
-        console.log("Decoded:",decoded)
         return decoded
     }
     catch (e) {

@@ -5,15 +5,15 @@ import { CommunityGuidelines } from "./CommunityGuidelinesCard";
 import { CommunityCover } from "./CommunityCover";
 import { TopicsCard } from "./TopicsCard";
 import { useState, useEffect } from "react";
-import { API_BASE, getThreadsByCommunity } from "../../../apis/community";
+import { API_BASE, getThreadsByCommunity, type Community, type Thread } from "../../../apis/community";
 import axios from "axios";
 import { useAuth } from "../../../context/AuthContext";
 
 export function CommunityDetailPage() {
     const { id } = useParams()
     const navigate = useNavigate()
-    const [community, setCommunity] = useState<any>(null)
-    const [threads, setThreads] = useState<any[]>([])
+    const [community, setCommunity] = useState<Community|null>(null)
+    const [threads, setThreads] = useState<Thread[]|null>([])
     const [isMember, setIsMember] = useState(false)
     const [loading, setLoading] = useState(true)
     const [searchQuery, setSearchQuery] = useState('')
@@ -47,7 +47,7 @@ export function CommunityDetailPage() {
     const checkMembership = async () => {
         try {
             const response = await axios.get(`${API_BASE}/community/joined?userId=${user?.userId}`, { withCredentials: true })
-            const joined = response.data.some((c: any) => c._id === id)
+            const joined = response.data.some((c: {_id:string}) => c._id === id)
             setIsMember(joined)
         } catch (error) {
             console.error('Error checking membership:', error)
@@ -58,9 +58,9 @@ export function CommunityDetailPage() {
         try {
             await axios.post(`${API_BASE}/community/${id}/join`, {}, { withCredentials: true })
             setIsMember(true)
-        } catch (error: any) {
+        } catch (error) {
             console.error('Error joining community:', error)
-            alert(error.response?.data?.message || 'Failed to join community')
+           
         }
     }
 
@@ -133,8 +133,8 @@ export function CommunityDetailPage() {
                     />
 
                     <div className="flex flex-col gap-4">
-                        {threads.length === 0 && <p className="text-center py-10 text-slate-500 italic">By default no threads. Be the first to start a conversation!</p>}
-                        {threads.map((thread) => (
+                        {threads && threads.length === 0 ? <p className="text-center py-10 text-slate-500 italic">By default no threads. Be the first to start a conversation!</p>
+                        : threads && threads.map((thread) => (
                             <FeedCard key={thread._id} thread={thread} onUpdate={fetchThreads} />
                         ))}
                     </div>

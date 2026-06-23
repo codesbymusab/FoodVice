@@ -1,36 +1,14 @@
 import { useNavigate } from "react-router"
-import { likeThread, dislikeThread } from "../../../apis/community"
+import { likeThread, dislikeThread, type Thread } from "../../../apis/community"
 import { useAuth } from "../../../context/AuthContext"
 
-interface Thread {
-    _id: string;
-    title: string;
-    content: string;
-    uid: {
-        _id: string;
-        name: string;
-        profilePhoto: string;
-    };
-    likes: string[];
-    dislikes: string[];
-    createdAt: string;
-    communityId: string;
-    media?: any[];
-}
 
-export function FeedCard({ thread, onUpdate }: { thread?: Thread, onUpdate?: () => void }) {
+
+export function FeedCard({ thread, onUpdate }: { thread: Thread, onUpdate?: () => void }) {
     const navigate = useNavigate()
     const { user } = useAuth()
 
-    if (!thread) {
-        // Fallback or placeholder if no thread is passed (for initial UI compatibility)
-        return (
-            <article className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm opacity-50 italic">
-                No thread data available
-            </article>
-        )
-    }
-
+   
     function goToDetailsPage() {
         if (thread) {
             navigate(`/community/${thread.communityId}/${thread._id}`)
@@ -98,7 +76,7 @@ export function FeedCard({ thread, onUpdate }: { thread?: Thread, onUpdate?: () 
                     {/* Media attachments */}
                     {thread.media && thread.media.length > 0 && (
                         <div className="mb-4 grid grid-cols-2 gap-2">
-                            {thread.media.slice(0, 4).map((media: any, index: number) => (
+                            {thread.media.slice(0, 4).map((media,index) => (
                                 <div key={media._id} className="relative">
                                     {media.type === 'image' ? (
                                         <img

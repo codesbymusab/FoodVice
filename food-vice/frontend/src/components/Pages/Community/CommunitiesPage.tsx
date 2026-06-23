@@ -8,7 +8,7 @@ import axios from "axios";
 import { useAuth } from "../../../context/AuthContext";
 import { API_BASE, getAllThreads, type Thread } from "../../../apis/community";
 
-export type SelectedTopic = string; // Can be 'all' or topic ID
+export type SelectedTopic = string; 
 
 export function CommunitiesPage() {
     const [selectedTopic, setSelectedTopic] = useState<SelectedTopic>('all')
@@ -65,9 +65,9 @@ export function CommunitiesPage() {
 
 
     useEffect(() => {
-        fetchJoinedCommunities()
-        fetchRecommendedCommunities()
-        fetchRecommendedThreads()
+        Promise.all([fetchJoinedCommunities,
+        fetchRecommendedCommunities,
+        fetchRecommendedThreads])
     }, [])
 
     useEffect(() => {
@@ -108,7 +108,7 @@ export function CommunitiesPage() {
                     <div className="flex flex-col gap-4">
                         {/* Recommendation cards in community section will actually contain threads and communities */}
                         {recommendedThreads.length === 0 && <p className="text-center py-10 text-slate-500 italic">No threads found</p>}
-                        {recommendedThreads.map((thread: any) => (
+                        {recommendedThreads.map((thread) => (
                             <FeedCard key={thread._id} thread={thread} onUpdate={fetchRecommendedThreads} />
                         ))}
                     </div>

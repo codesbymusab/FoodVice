@@ -1,8 +1,8 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import '../../../index.css'
 import { Hero } from './Sections/Hero'
-import { LatestDiscussion } from './Sections/LatestDiscussion'
-import { Leaderbaord } from './Sections/Leaderboard'
+// import { LatestDiscussion } from './Sections/LatestDiscussion'
+// import { Leaderbaord } from './Sections/Leaderboard'
 import { Nearby } from './Sections/NearBy'
 import { Reels } from './Sections/Reels'
 import { Reviews } from './Sections/Reviews'
@@ -12,11 +12,11 @@ import { HomeSkelton } from '../Skeltons/HomeSkelton'
 import { useAppLocation } from '../../../context/LocationContext'
 import { fetchCuisines } from '../../../apis/cuisines'
 import { type Cuisine, type Filter } from '../Explore/ExplorePage'
+import { ErrorScreen } from '../../Shared/Feedback'
 
 export function HomePage() {
 
-    const { location, loading: locationLoading } = useAppLocation();
-    const [dataLoading, setDataLoading] = useState(false);
+    const { location, loading, error, fetchLocation } = useAppLocation();
     const [cuisines, setCuisines] = useState<Cuisine[] | null>(null)
     const [filters, setFilters] = useState<Filter|null>({
         cuisine: 'All',
@@ -25,8 +25,7 @@ export function HomePage() {
         dist: 50,
 
     })
-    const prevLocationRef = useRef<[number, number] | null>(null);
-
+   
 
     async function loadCuisines() {
         
@@ -43,10 +42,14 @@ export function HomePage() {
 
     useEffect(() => { loadCuisines() }, [])
 
-    if (locationLoading) {
+    if (loading) {
         return (
             <HomeSkelton />
         )
+    }
+
+    if(!location){
+        return <ErrorScreen title='Failed to Load Location' message={error!} onRetry={fetchLocation}/>
     }
     return (
         <main className="max-w-7xl mx-auto pb-20 pt-8">

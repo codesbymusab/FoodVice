@@ -29,7 +29,7 @@ dotenv.config()
 const app = express()
 
 
-const allowedOrigins = process.env.ENVIRONMEN === "Development" ? [
+const allowedOrigins = process.env.ENVIRONMENT === "Development" ? [
   'http://localhost:5173',
   'http://localhost:3000',
   'https://food-vice-d9gy.vercel.app'

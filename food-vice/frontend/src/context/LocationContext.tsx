@@ -39,6 +39,7 @@ export function LocationProvider({ children }: LocationProviderProps) {
           resolve();
         },
         (fetchError) => {
+       
           console.error("Unable to determine current location:", fetchError);
           setLocation(null);
           setError("Unable to determine your current location.");

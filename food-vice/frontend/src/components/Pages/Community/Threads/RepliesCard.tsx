@@ -45,7 +45,7 @@ export function RepliesCard({ comments, onCommentsUpdated }: { comments: ThreadC
                             {/* Media attachments */}
                             {comment.media && comment.media.length > 0 && (
                                 <div className="mb-3 grid grid-cols-2 gap-2">
-                                    {comment.media.slice(0, 4).map((media: any, index: number) => (
+                                    {comment.media.slice(0, 4).map((media, index: number) => (
                                         <div key={media._id}>
                                             {media.type === 'image' ? (
                                                 <img

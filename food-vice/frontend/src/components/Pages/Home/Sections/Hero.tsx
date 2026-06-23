@@ -1,15 +1,20 @@
 import { useAppLocation } from '../../../../context/LocationContext'
 import { useState, useEffect, useRef} from 'react'
+import { ErrorScreen } from '../../../Shared/Feedback';
 
+type PlaceSuggestion={
+    display_name:string,
+    lat:string,
+    lon:string
+}
 export function Hero() {
     const { setLocation } = useAppLocation();
     const [locationInput, setLocationInput] = useState('');
     const [searching, setSearching] = useState(false);
-    const [suggestions, setSuggestions] = useState<any[]>([]);
-    const [showSuggestion,setShowSuggestions]=useState<boolean>(true)
+    const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([]);
+    const [error,setError]=useState<null|object>(null)
     const inputRef = useRef<HTMLInputElement>(null);
 
-    // Fetch suggestions from Nominatim
     useEffect(() => {
         const controller = new AbortController();
 
@@ -22,9 +27,8 @@ export function Hero() {
                         { signal: controller.signal }
                     );
                     const data = await response.json();
-                    
                     setSuggestions(data);
-                    setShowSuggestions(true)
+                    
                 } catch (err) {
                     console.error('Autocomplete error:', err);
                 } finally {
@@ -40,11 +44,10 @@ export function Hero() {
         return () => controller.abort();
     }, [locationInput]);
 
-    const handleSelect = (place: any) => {
+    const handleSelect = (place:PlaceSuggestion) => {
         setLocation([parseFloat(place.lat), parseFloat(place.lon)]);
         setLocationInput(place.display_name);
         setSuggestions([]);
-        setShowSuggestions(false)
         setSearching(false)
 
     };
@@ -73,19 +76,21 @@ export function Hero() {
                 setLocation([parseFloat(lat), parseFloat(lon)]);
                 setSuggestions([])
             } else {
-                alert('Location not found. Please try a different search term.');
+                setError({title:'Location not found',message:'Please try a different search term.'})
+                setTimeout(()=>{setError(null)},3000)
             }
         } catch (error) {
             console.error('Geocoding error:', error);
-            alert('Failed to search location. Please try again.');
+            setError({title:'Geocoding error',message:'Failed to fetch location. Please try again later.'})
+            setTimeout(()=>{setError(null)},3000)
         } finally {
             setSearching(false);
         }
     };
 
     return (
-
-        <section className="relative flex min-h-[500px] flex-col items-center justify-center px-4 py-20 text-center lg:min-h-[600px] overflow-hidden">
+        error ? <ErrorScreen {...error} />
+        : <section className="relative flex min-h-[500px] flex-col items-center justify-center px-4 py-20 text-center lg:min-h-[600px] overflow-hidden">
 
             <div className="absolute rounded-2xl inset-0 -z-15 bg-cover bg-center mb-6" style={{
                 backgroundImage:

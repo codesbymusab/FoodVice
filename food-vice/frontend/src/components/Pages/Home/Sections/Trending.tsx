@@ -23,7 +23,6 @@ export function Trending() {
                 maxDistance: 50,
                 location,
             });
-            console.log(details)
             setTrendingRestaurants(details);
         } catch (error) {
             console.error(error);

@@ -132,7 +132,8 @@ export interface Thread {
   dislikes: string[];
   media:{
     _id:string,
-    url:string
+    url:string,
+    type: 'image' | 'video',
   }[],
   likeCount?: number;
   dislikeCount?: number;

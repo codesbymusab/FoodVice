@@ -2,14 +2,14 @@ import { useState, useEffect, type ChangeEvent } from "react"
 import { useNavigate, useParams } from "react-router"
 import { CommunityGuidelines } from "../CommunityGuidelinesCard"
 import { CommunityCover } from "../CommunityCover"
-import { API_BASE, createThread, getTopics, type Topic } from "../../../../apis/community"
+import { API_BASE, createThread, getTopics, type Community, type Topic } from "../../../../apis/community"
 
 export function CreateThreadPage() {
     const { id } = useParams()
     const navigate = useNavigate()
     const [title, setTitle] = useState('')
     const [content, setContent] = useState('')
-    const [community, setCommunity] = useState<any>(null)
+    const [community, setCommunity] = useState<Community|null>(null)
     const [mediaFiles, setMediaFiles] = useState<File[]>([])
     const [mediaPreviews, setMediaPreviews] = useState<string[]>([])
     const [selectedTopics, setSelectedTopics] = useState<string[]>([])
@@ -17,6 +17,7 @@ export function CreateThreadPage() {
     const [loading, setLoading] = useState(false)
 
     useEffect(() => {
+        
         if (id) {
             fetchCommunityDetails()
         }
