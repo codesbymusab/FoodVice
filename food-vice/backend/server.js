@@ -28,11 +28,15 @@ dotenv.config()
 
 const app = express()
 
-const allowedOrigins = [
+
+const allowedOrigins = process.env.ENVIRONMEN === "Development" ? [
   'http://localhost:5173',
   'http://localhost:3000',
   'https://food-vice-d9gy.vercel.app'
-];
+] :
+[
+  'https://food-vice-d9gy.vercel.app'
+]
 
 app.use((req, res, next) => {
   console.log('Incoming Origin:', req.headers.origin);
@@ -51,17 +55,12 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
-app.use(express.json())
-app.use(cookieParser())
 app.listen(3000, () => { console.log('Server Started') })
 
 mongodbConfig.connectDB()
 
 
 app.use('/auth', authRoute)
-
-
-
 app.use('/user', userRoute)
 app.use('/community', communityRoute)
 app.use('/thread', threadRoute)

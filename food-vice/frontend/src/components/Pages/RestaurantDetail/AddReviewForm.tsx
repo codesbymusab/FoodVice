@@ -42,7 +42,7 @@ export function AddReviewForm({ setShowReviewForm, fetchRestaurant, location }: 
       formData.append("userId", `${user?.userId}`);
       formData.append("restaurantId", `${params.id}`);
       formData.append("text", text);
-      formData.append("rating", JSON.stringify({ food, service, ambience, price, overall: (food + service + ambience + price) / 4 }));
+      formData.append("rating", JSON.stringify({ food, service, ambience, price}));
 
       files.forEach(file => formData.append("files", file));
 

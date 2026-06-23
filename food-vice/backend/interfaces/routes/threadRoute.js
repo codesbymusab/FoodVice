@@ -2,10 +2,12 @@ const express = require('express');
 const router = express.Router();
 const threadController = require('../controllers/threadController');
 const multer = require('multer');
+const { validateRequest } = require('../middlewares/validationMiddleware');
+const threadSchema = require('../validators/thread.validator');
 
 const upload = multer({ storage: multer.memoryStorage() });
 
-router.post('/',  upload.array('media', 10), threadController.createThread);
+router.post('/',validateRequest(threadSchema),upload.array('media', 10), threadController.createThread);
 router.get('/community/all',  threadController.getAllThreads);
 router.post('/comment/:commentId/like',  threadController.toggleCommentLike);
 router.get('/:id',  threadController.getThreadById);

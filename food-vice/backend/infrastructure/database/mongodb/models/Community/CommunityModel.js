@@ -5,7 +5,6 @@ const CommunitySchema = new mongoose.Schema({
   description: { type: String, required: true },
   guidelines: { type: [String], default: [] },
   coverPhoto: String,
-  category: String,
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 }, { timestamps: true });
 
