@@ -118,7 +118,7 @@ export function ReelsPage() {
                 if (reelsPagination?.cursor) {
                     setReels([ ...reels!, ...result!.data]);
                 } else {
-                    setReels(result?.data ?? null);
+                    setReels(result.data);
                 }
                 setReelsPagination(result?.pagination ?? null)
             } else {

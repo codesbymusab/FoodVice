@@ -27,7 +27,7 @@ exports.restReviews = async (req, res) => {
         const result = await getReviews.execute({ restId,cursor,limit:limitNum })
 
         if (result) {
-            return res.status(200).json(result);
+            return res.status(200).json({success:true,message:'Restaurant reviews',...result});
         }
 
         return res.status(400).json({ message: 'Failed to load reviews' });
@@ -58,7 +58,8 @@ exports.recentReviews = async (req, res) => {
         const result = await getrecentReviews.execute({userId,cursor,limit:limitNum})
 
         if (result) {
-            return res.status(200).json(result);
+           return res.status(200).json({success:true,message:'Recent reviews',...result});
+        
         }
 
         return res.status(400).json({ message: 'Failed to load recent reviews' });

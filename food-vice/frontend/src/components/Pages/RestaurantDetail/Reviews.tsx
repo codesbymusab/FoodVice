@@ -1,22 +1,31 @@
 import { useEffect, useState, type Dispatch } from "react"
-import { type Review, ReviewTile } from "./ReviewTile"
+import { ReviewTile } from "./ReviewTile"
 import { useParams } from "react-router"
-import { fetchReviews } from "../../../apis/reviews"
+import { fetchReviews, type Review } from "../../../apis/reviews"
+import type { cursorPagination } from "../../../apis/restaurants"
 
 type ReviewProps = {
-    
+
     userReview: Review[] | null,
     setUserReview: Dispatch<React.SetStateAction<Review[] | null>>,
 }
-export function Reviews({ userReview, setUserReview }:ReviewProps) {
-    const params=useParams()
-    
-    const [reviews, setReviews] = useState<Review[] | null>(null)
+export function Reviews({ userReview, setUserReview }: ReviewProps) {
+    const params = useParams()
 
+    const [reviews, setReviews] = useState<Review[] | null>(null)
+    const [reviewsPagination, setReviewsPagination] = useState<cursorPagination | null>()
     async function loadReviews() {
         try {
-            const reviewsData = await fetchReviews({restId:params.id!});
-            setReviews(reviewsData ?? null);
+            const result = await fetchReviews({ restId: params.id!, limit: 5, cursor: reviewsPagination?.cursor });
+            if (result && result.data.length > 0) {
+                if (reviewsPagination?.cursor) {
+                    setReviews([...reviews!, ...result.data])
+                } else {
+                    setReviews(result.data)
+                }
+                setReviewsPagination(result.pagination ?? null)
+            }
+
         } catch (error) {
             console.error(error);
         }
@@ -55,7 +64,7 @@ export function Reviews({ userReview, setUserReview }:ReviewProps) {
             </div>
 
 
-            {reviews &&  reviews!.length > 0 ? <div className="space-y-8 bg-white rounded-3xl p-4">
+            {reviews && reviews.length > 0 ? <div className="space-y-8 bg-white rounded-3xl p-4">
                 {
                     reviews!.map((review) => {
                         return <ReviewTile key={review._id} review={review} setReviews={setReviews} />
@@ -69,6 +78,12 @@ export function Reviews({ userReview, setUserReview }:ReviewProps) {
                     Be the first to review this restaurant
                 </div>
             }
+
+            {reviewsPagination?.cursor && <div className='flex items-center justify-center'>
+                <button className="px-4 py-3  mb-4 border-2 bg-white rounded-2xl border-primary text-primary font-bold text-sm hover:underline hover:scale-105" onClick={async () => loadReviews()}>
+                    View More
+                </button>
+            </div>}
         </section>
     )
 }

@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import type { Reel } from "../../Reels/ReelsPage";
 import { ReelCard } from "../Cards/ReelCard";
 import { useAuth } from "../../../../context/AuthContext";
-import { ErrorScreen, SkeletonReelCard, SkeletonReelGrid } from "../../../Shared/Feedback";
-import { fetchRecentReels } from "../../../../apis/reels";
+import { ErrorScreen, SkeletonReelCard} from "../../../Shared/Feedback";
+import { fetchRecentReels, type Reel } from "../../../../apis/reels";
 
 export function Reels() {
 
@@ -16,8 +15,9 @@ export function Reels() {
         setLoading(true)
         setError(null)
         try {
-            const reelsData = await fetchRecentReels({ userId: user!.userId, tag: 'All' });
-            setReels(reelsData ?? null);
+            const result = await fetchRecentReels({ userId: user!.userId, tag: 'All' });
+            setReels(result?.data ?? null);
+                        
         } catch (error) {
             console.error(error);
             setError("Unable to load reels. Please try again.");
@@ -61,7 +61,9 @@ export function Reels() {
                         </div>
                     )}
                 </div>
+                
             </div>
+    
         </section>
     )
 }

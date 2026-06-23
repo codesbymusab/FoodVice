@@ -1,3 +1,5 @@
+import type { cursorPagination } from "./restaurants"
+
 export type Review = {
     _id: string,
     text: string,
@@ -55,10 +57,10 @@ export async function toggleLikeReview(
 }
 
 
-export async function fetchReviews({ restId }: { restId: string }) {
+export async function fetchReviews({ restId,limit,cursor }: { restId: string, limit:number, cursor?:string }): Promise<{data:Review[], pagination?:cursorPagination}|undefined> {
     try {
         const res = await fetch(
-            `${API_BASE}/reviews/${restId}`,
+            `${API_BASE}/reviews/${restId}?limit=${limit}${cursor ? `&cursor=${cursor}`:""}`,
             { credentials: "include" }
         );
         if (res.ok) {
@@ -76,16 +78,16 @@ export async function fetchReviews({ restId }: { restId: string }) {
 
 
 
-export async function fetchRecentReviews({ userId }: { userId: string }) {
+export async function fetchRecentReviews({ userId,limit,cursor }: { userId: string, limit:number, cursor?:string }): Promise<{data:Review[], pagination?:cursorPagination}|undefined> {
     try {
         const res = await fetch(
-            `${API_BASE}/reviews/recent?userId=${userId}`,
+            `${API_BASE}/reviews/recent?userId=${userId}&limit=${limit}${cursor ? `&cursor=${cursor}`:""}`,
             { credentials: "include" }
         );
         if (res.ok) {
-            const reviews = await res.json();
+            const result = await res.json();
           
-            return reviews
+            return result
 
         }
         else {

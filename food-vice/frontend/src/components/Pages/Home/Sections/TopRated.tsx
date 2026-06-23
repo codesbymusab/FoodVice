@@ -23,12 +23,12 @@ export function TopRated({ filters, cuisines, setFilters }: { cuisines: Cuisine[
         setError(null);
         try {
         
-            const details = await fetchTopRatedRestaurants({
+            const result = await fetchTopRatedRestaurants({
                 userId: user!.userId,
                 filters: filters ? filters : { cuisine: 'All', price: '', rating: 0, dist: 50 },
                 location,
             });
-            setTopRatedRestaurants(details);
+            setTopRatedRestaurants(result?.data ?? null);
         } catch (error) {
             console.error(error);
             setError("Unable to load top rated restaurants. Please try again.");
