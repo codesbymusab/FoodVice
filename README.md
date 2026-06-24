@@ -25,7 +25,7 @@ https://food-vice-d9gy.vercel.app
 
 ## 🛠️ Tech Stack
 - **Frontend:** React + TypeScript, Vite, TailwindCSS  
-- **Backend:** Node.js, Express.js, Hexagonal Architecture  
+- **Backend:** Node.js, Express.js, Clean Architecture  
 - **Database:** MongoDB with GeoSpatial Queries
 - **Storage:** Firebase
 - **Authentication:** JWT, Google OAuth  
@@ -71,7 +71,7 @@ backend/
 
 ---
 
-## Key decisions
+## 💡 Key decisions
 
 ### Why Clean Architecture?
 
