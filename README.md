@@ -2,7 +2,7 @@
 
 # 🍔 FoodVice – Food Discovery & Community Platform
 
-FoodVice is a **full-stack food discovery and community application** built as a semester project. It combines restaurant discovery, social engagement, and AI-powered recommendations into one platform. Designed with **hexagonal architecture** on the backend, it demonstrates scalable system design and modern development practices.
+FoodVice is a **full-stack food discovery and community application** built as a semester project. It combines restaurant discovery, social engagement, and AI-powered recommendations into one platform. Designed with **clean architecture** on the backend, it demonstrates scalable system design and modern development practices.
 
 ---
 ## 🔗 Live Link
@@ -50,7 +50,7 @@ frontend/
 │── package.json
 ```
 
-### Backend (Hexagonal Architecture)
+### Backend (Clean Architecture)
 ```
 backend/
 │── src/
@@ -64,6 +64,26 @@ backend/
 ```
 
 ---
+
+## 🏰 Architecture Diagram
+
+<img width="782" height="1351" alt="Architecture Diagram drawio" src="https://github.com/user-attachments/assets/42403810-98d7-45d2-968f-098c721ad8f6" />
+
+---
+
+## Key decisions
+
+### Why Clean Architecture?
+
+Adopted Clean Architecture to prevent controllers becoming bloated with buisness logic, enabling infrastructure swaps without touching the business logic, loose coupling as use cases become easily testable without the database and clear ownership as each file serves a single purpose
+
+
+### Why cursor pagination over offset?
+
+As FoodVice restaurant,review and reel listings will grow to thousands of entries.Offset-based pagination  degrades as offset grows, moreover the result remain stable as new insertions mid pagination can shift pages and since UI is also based on infinite scroll and load more style so cursor pagination makes more sense.
+
+---
+
 
 ## 📸 Screenshots
 
@@ -129,7 +149,7 @@ backend/
 - **Advanced AI Recommendations** using collaborative filtering and sentiment analysis.  
 - **Analytics Dashboard** for admins to track engagement and restaurant performance.  
 - **Gamification** – badges, levels, and rewards for active users.  
-
+- **Notifications** - reale time notifications of activities,replies and gamification
 ---
 
 ## 👨‍💻 Contributors
