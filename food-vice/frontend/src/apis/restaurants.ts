@@ -158,7 +158,7 @@ export async function saveRestaurant({ userId, restId }: { userId: string, restI
     }
 
     catch (error) {
-        console.log(error)
+        console.error(error)
         return false
 
     }

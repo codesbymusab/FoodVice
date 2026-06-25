@@ -21,7 +21,7 @@ exports.getUser=async (req,res)=>{
         return res.status(400).json({ message: 'User not logged in' });
     }
     catch(error){
-        console.log(error)
+        console.error(error)
         if (!res.headersSent) {
             return res.status(400).json({message:error.message})
         }
@@ -46,7 +46,7 @@ exports.getUserProfile=async (req,res)=>{
         return res.status(400).json({ message: 'Failed to load profile' });
     }
     catch(error){
-        console.log(error)
+        console.error(error)
         return res.status(400).json({message:error.message})
     }
     
@@ -68,7 +68,7 @@ exports.editUser = async (req, res) => {
         return res.status(400).json({ message: 'User update failed' });
     }
     catch (error) {
-        console.log(error)
+        console.error(error)
         if (!res.headersSent) {
             return res.status(400).json({ message: error.message })
         }

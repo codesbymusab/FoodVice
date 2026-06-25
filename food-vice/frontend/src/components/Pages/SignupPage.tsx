@@ -81,7 +81,7 @@ export function SignupPage() {
             }
         }
         catch (error) {
-            console.log(error);
+            console.error(error);
             setErrors({
                 submit: error instanceof Error ? error.message : "Sign up failed. Please try again."
             })

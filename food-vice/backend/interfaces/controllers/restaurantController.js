@@ -66,7 +66,7 @@ exports.recommendedRest = async (req, res) => {
 
     }
     catch (error) {
-        console.log(error)
+        console.error(error)
         return res.status(400).json({success:false, message: error.message })
     }
 
@@ -124,7 +124,7 @@ exports.topRatedRest = async (req, res) => {
 
     }
     catch (error) {
-        console.log(error)
+        console.error(error)
         return res.status(400).json({ success:false, message: error.message })
     }
 
@@ -175,7 +175,7 @@ exports.nearbyRest = async (req, res) => {
 
     }
     catch (error) {
-        console.log(error)
+        console.error(error)
         return res.status(400).json({ message: error.message })
     }
 
@@ -222,7 +222,7 @@ exports.restDetails = async (req, res) => {
 
     }
     catch (error) {
-        console.log(error)
+        console.error(error)
         return res.status(400).json({ message: error.message })
     }
 
@@ -268,7 +268,7 @@ exports.similarRest = async (req, res) => {
 
     }
     catch (error) {
-        console.log(error)
+        console.error(error)
         return res.status(400).json({ message: error.message })
     }
 
@@ -291,7 +291,7 @@ exports.restCuisines = async (req, res) => {
         return res.status(400).json({ message: 'Failed to load cuisines' });
     }
     catch (error) {
-        console.log(error)
+        console.error(error)
         return res.status(400).json({ message: error.message })
     }
 }
@@ -301,7 +301,6 @@ exports.restCuisines = async (req, res) => {
 exports.restPhotos = async (req, res) => {
     try {
         const restId = req.params.id
-        console.log(restId)
         const mediaRepo = new MediaRepoImpl()
         const getPhotos = new GetRestaurantPhotos(mediaRepo)
         const photos = await getPhotos.execute({ restId: restId })
@@ -313,7 +312,7 @@ exports.restPhotos = async (req, res) => {
         return res.status(400).json({ message: 'Failed to load reviews' });
     }
     catch (error) {
-        console.log(error)
+        console.error(error)
         return res.status(400).json({ message: error.message })
     }
 }

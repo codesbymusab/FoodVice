@@ -18,7 +18,7 @@ exports.saveRestaurant=async (req,res)=>{
         return res.status(400).json({ message: 'Failed to save restaurant' });
     }
     catch(error){
-        console.log(error)
+        console.error(error)
         return res.status(400).json({message:error.message})
     }
     
@@ -40,7 +40,7 @@ exports.saveReel=async (req,res)=>{
         return res.status(400).json({ message: 'Failed to save reel' });
     }
     catch(error){
-        console.log(error)
+        console.error(error)
         return res.status(400).json({message:error.message})
     }
     

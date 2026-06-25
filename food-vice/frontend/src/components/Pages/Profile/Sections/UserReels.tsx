@@ -20,7 +20,7 @@ export function UserReels({ userId }: { userId: string }) {
 
 
             if (reelsData) {
-                console.log(reelsData)
+                
                 if (savedReelsPagination?.cursor) {
                     setSavedReels([...savedReels!, ...reelsData.saved.data])
                 }

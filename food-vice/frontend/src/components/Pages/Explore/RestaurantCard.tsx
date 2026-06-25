@@ -40,7 +40,7 @@ export function RestaurantCard({ restaurant, setTopRatedRestaurants }: { restaur
                     : prev
             );
         } catch (error) {
-            console.log(error);
+            console.error(error);
             return false;
         }
     }

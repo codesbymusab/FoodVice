@@ -252,7 +252,7 @@ export async function saveReel(userId: string, reelId: string) {
         }
     }
     catch (error) {
-        console.log(error)
+        console.error(error)
         return false
 
     }

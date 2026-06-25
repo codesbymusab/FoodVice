@@ -33,7 +33,7 @@ exports.restReviews = async (req, res) => {
         return res.status(400).json({ message: 'Failed to load reviews' });
     }
     catch (error) {
-        console.log(error)
+        console.error(error)
         return res.status(400).json({ message: error.message })
     }
 }
@@ -65,7 +65,7 @@ exports.recentReviews = async (req, res) => {
         return res.status(400).json({ message: 'Failed to load recent reviews' });
     }
     catch (error) {
-        console.log(error)
+        console.error(error)
         return res.status(400).json({ message: error.message })
     }
 }
@@ -96,7 +96,7 @@ exports.userReviews = async (req, res) => {
         return res.status(400).json({ message: 'Failed to load user reviews' });
     }
     catch (error) {
-        console.log(error)
+        console.error(error)
         return res.status(400).json({ message: error.message })
     }
 }

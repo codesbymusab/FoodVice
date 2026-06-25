@@ -50,13 +50,13 @@ export function SigninPage() {
             
             
             if (user) {
-                console.log(user)
+        
                 setUser(user);
                 navigate('/home');
             }
         }
         catch (error) {
-            console.log(error);
+            console.error(error);
             setErrors({
                 submit: error instanceof Error ? error.message : "Failed to sign in. Please check your credentials."
             })
@@ -72,13 +72,12 @@ export function SigninPage() {
             try {
                 const user = await loginWithGoogle(tokenResponse.access_token);
                 if (user) {
-                    console.log(user)
                     setUser(user);
                     navigate('/home');
                 }
             }
             catch (error) {
-                console.log(error);
+                console.error(error);
                 setErrors({
                     submit: "Google sign in failed. Please try again."
                 })

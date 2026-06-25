@@ -30,7 +30,7 @@ export const fetchUser = async () => {
         }
 
         const data = await res.json();
-        console.log(data)
+        
 
         if (data.user) {
             return data.user
@@ -41,7 +41,7 @@ export const fetchUser = async () => {
 
         }
     } catch (err) {
-        console.log(err)
+        console.error(err)
     }
 };
 
