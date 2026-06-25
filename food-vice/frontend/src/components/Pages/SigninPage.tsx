@@ -50,6 +50,7 @@ export function SigninPage() {
             
             
             if (user) {
+                console.log(user)
                 setUser(user);
                 navigate('/home');
             }
@@ -71,6 +72,7 @@ export function SigninPage() {
             try {
                 const user = await loginWithGoogle(tokenResponse.access_token);
                 if (user) {
+                    console.log(user)
                     setUser(user);
                     navigate('/home');
                 }

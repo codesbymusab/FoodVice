@@ -51,6 +51,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [loading, setLoading] = useState(true);
 
   const fetchUser = async () => {
+    
     setLoading(true);
 
     if (typeof navigator !== "undefined" && !navigator.onLine) {
@@ -83,6 +84,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
 
 export const useAuth = (): AuthContextType => {
+
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");

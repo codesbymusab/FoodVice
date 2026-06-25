@@ -8,7 +8,9 @@ export interface User {
     bio?: string;
     level: number;
     role?: 'user' | 'moderator' | 'admin';
-
+    banReason: string | null;
+    banUntil: Date | null;
+    banned: boolean
 
 }
 
@@ -28,6 +30,7 @@ export const fetchUser = async () => {
         }
 
         const data = await res.json();
+        console.log(data)
 
         if (data.user) {
             return data.user

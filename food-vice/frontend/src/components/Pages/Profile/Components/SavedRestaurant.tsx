@@ -1,4 +1,4 @@
-import type { Restaurant } from "../RestaurantDetail/RestaurantDetailPage";
+import type { Restaurant } from "../../RestaurantDetail/RestaurantDetailPage";
 
 export function SavedRestaurant({restaurant}:{restaurant:Restaurant}){
     return (

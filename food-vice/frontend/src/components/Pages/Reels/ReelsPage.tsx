@@ -120,7 +120,7 @@ export function ReelsPage() {
                 } else {
                     setReels(result.data);
                 }
-                setReelsPagination(result?.pagination ?? null)
+                setReelsPagination(result.pagination ?? null)
             } else {
                 await loadRecentReels();
             }

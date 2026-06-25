@@ -6,7 +6,7 @@ class GetUserReels {
     this.reelRepo = reelRepo;
   }
 
-  async execute({ cursor, limit, userId }) {
+  async execute({ savedCursor,userCursor, limit, userId }) {
 
     if (!userId) return new Error('UserId required')
 
@@ -15,14 +15,10 @@ class GetUserReels {
     if (limit && limit > 100) {
       limitCap = 100
     }
-    const savedReels = await this.reelRepo.getReels(userId, cursor ? decodeCursor(cursor) : undefined, limitCap, 'saved');
-    const userReels = await this.reelRepo.getReels(userId, cursor ? decodeCursor(cursor) : undefined, limitCap, 'user');
+    const savedReels = await this.reelRepo.getReels(userId, savedCursor ? decodeCursor(savedCursor) : undefined, limitCap, 'saved');
+    const userReels = await this.reelRepo.getReels(userId, userCursor ? decodeCursor(userCursor) : undefined, limitCap, 'user');
 
-    return cursorPaginateReels({
-      saved: savedReels,
-      user: userReels
-    },
-      limitCap)
+    return { saved:cursorPaginateReels(savedReels,limitCap),user:cursorPaginateReels(userReels,limitCap)}
   }
 }
 

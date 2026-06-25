@@ -7,7 +7,7 @@ import { ErrorScreen, LoadingDialog } from "./Shared/Feedback";
 export function ProtectedRoute(){
   const { user, loading } = useAuth();
   const location = useLocation();
-  
+
   if (loading) return <LoadingDialog message="Verifying your account..." />;
    
   if (!user) {
@@ -22,8 +22,12 @@ export function ProtectedRoute(){
   
   }
 
-  if(user.status==="banned" ){
-    return <ErrorScreen title="Banned" message={user.banReason}/>
+  if(user.banned && user.banUntil===null ){
+    return <ErrorScreen title="You are Banned" message={`Reason for Ban:\n${user.banReason}}`}/>
+  }
+
+  if(user.banned && new Date(user.banUntil) > new Date()){
+    return <ErrorScreen title="You are Banned" message={`Reason for Ban:\n${user.banReason}\n${user.banUntil ? `Ban Until: ${new Date(user.banUntil).toLocaleDateString()}`:""}`}/>
   }
 
   return <Outlet />;

@@ -1,5 +1,13 @@
+import type { Reel } from "./reels";
+import type { cursorPagination } from "./restaurants";
+import type { Review } from "./reviews";
+
 const API_BASE = import.meta.env.VITE_API_BASE
 
+export type UserReels={
+    saved: Reel[],
+    user:Reel[]
+}
 
 export async function fetchUserProfile(userId: string) {
     try {
@@ -37,7 +45,7 @@ export async function fetchSavedRestaurants(userId: string) {
     }
 }
 
-export async function fetchUserReels(userId: string) {
+export async function fetchUserReels(userId: string):Promise<{saved:{data:Reel[]; pagination?:cursorPagination}; user:{data:Reel[]; pagination?:cursorPagination}}|undefined> {
     try {
         const res = await fetch(`${API_BASE}/reels/${userId}`, {
             credentials: "include",
@@ -47,15 +55,15 @@ export async function fetchUserReels(userId: string) {
             throw new Error("Failed to load user reels");
         }
 
-        const data = await res.json();
-        return data;
+        const result = await res.json();
+        return result;
     } catch (error) {
         console.error(error);
         throw error;
     }
 }
 
-export async function fetchUserReviews(userId: string) {
+export async function fetchUserReviews(userId: string):Promise<{data:Review[]; pagination?:cursorPagination}|undefined> {
     try {
         const res = await fetch(`${API_BASE}/reviews/user/${userId}`, {
             credentials: "include",
@@ -65,8 +73,8 @@ export async function fetchUserReviews(userId: string) {
             throw new Error("Failed to load user reviews");
         }
 
-        const data = await res.json();
-        return data;
+        const result = await res.json();
+        return result;
     } catch (error) {
         console.error(error);
         throw error;

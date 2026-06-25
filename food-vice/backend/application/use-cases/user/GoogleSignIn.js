@@ -33,7 +33,7 @@ class GoogleSignIn {
 
          const token = await this.jwtAuthRepo.getToken(user._id)
 
-        return { user: { userId: user._id, name: user.name, email: user.email, username: user.username, role: user.role }, token: token }
+        return { user: { userId: user._id, name: user.name, email: user.email, username: user.username, role: user.role, banned: user.banned, banReason: user.banReason, banUntil: user.banUntil }, token: token }
 
     }
 }

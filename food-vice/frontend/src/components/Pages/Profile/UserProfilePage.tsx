@@ -1,21 +1,22 @@
 import { useEffect, useState } from "react";
 import { ReelCard } from "../Home/Cards/ReelCard";
-import { AchievementBadge, AchievementBadgeAlt } from "./AchievementBadge";
-import { PostedReview } from "./PostedReview";
-import { SavedRestaurant } from "./SavedRestaurant";
+import { AchievementBadge, AchievementBadgeAlt } from "./Components/AchievementBadge";
+import { PostedReview } from "./Components/PostedReview";
+import { SavedRestaurant } from "./Components/SavedRestaurant";
 import { useParams } from "react-router";
 import { EditProfilePage } from "./EditProfilePage";
 import { fetchUserProfile as loadUserProfileData, fetchSavedRestaurants, fetchUserReels, fetchUserReviews } from "../../../apis/profile";
 import type { Restaurant } from "../RestaurantDetail/RestaurantDetailPage";
-import type { Reel } from "../Reels/ReelsPage";
-import type { Review } from "../RestaurantDetail/ReviewTile";
+
 import { useAuth } from "../../../context/AuthContext";
 import { LoadingDialog } from "../../Shared/Feedback";
+import type { Review } from "../../../apis/reviews";
+import type { cursorPagination } from "../../../apis/restaurants";
+import type { Reel } from "../../../apis/reels";
+import { UserReels } from "./Sections/UserReels";
+import { UserReviews } from "./Sections/UserReviews";
 
-type UserReels={
-    saved: Reel[],
-    user:Reel[]
-}
+
 export type UserProfile = {
     _id: string,
     userId: string
@@ -34,34 +35,36 @@ export type UserProfile = {
     provider: string
 }
 
-type SelectedTab='restaurants'|'reviews'|'reels'
+type SelectedTab = 'restaurants' | 'reviews' | 'reels'
 export function UserProfilePage() {
 
 
     const params = useParams()
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
     const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
-    const [reels, setReels] = useState<UserReels|null>(null);
     const [reviews, setReviews] = useState<Review[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [showEditForm, setShowEditForm] = useState<boolean>(false);
-    const [selectedTab,setSelectedTab]=useState<SelectedTab>('restaurants')
-    const {user}=useAuth()
+    const [selectedTab, setSelectedTab] = useState<SelectedTab>('restaurants')
+    const { user } = useAuth()
     async function fetchUserProfile() {
         try {
             setLoading(true);
 
-            const [profileData, restaurantsData, reelsData, reviewsData] = await Promise.all([
+            const [profileData, restaurantsData] = await Promise.all([
                 loadUserProfileData(params.id!),
                 fetchSavedRestaurants(params.id!),
-                fetchUserReels(params.id!),
-                fetchUserReviews(params.id!),
+
             ]);
 
             setUserProfile(profileData);
             setRestaurants(restaurantsData);
-            setReels(reelsData);
-            setReviews(reviewsData);
+
+
+
+
+
+
         } catch (err) {
             console.error("Error fetching user profile data:", err);
         } finally {
@@ -87,7 +90,7 @@ export function UserProfilePage() {
         return <EditProfilePage profile={userProfile!} setShowEditForm={setShowEditForm} fetchProfile={fetchUserProfile} />
     }
 
-    if(!userProfile) return <LoadingDialog message="Failed to load user profile. Retrying..." />
+    if (!userProfile) return <LoadingDialog message="Failed to load user profile. Retrying..." />
 
     return (
 
@@ -100,7 +103,7 @@ export function UserProfilePage() {
                     <div className="relative">
                         <div className="absolute inset-0 bg-primary/20 rounded-full blur-2xl"></div>
                         <div className="relative size-32 md:size-40 rounded-full border-4 border-white dark:border-slate-800 shadow-xl overflow-hidden">
-                             <img alt="Profile" className="w-full h-full object-cover" src={userProfile!.profilePhoto} /> 
+                            <img alt="Profile" className="w-full h-full object-cover" src={userProfile!.profilePhoto} />
 
                         </div>
                         <div className="absolute bottom-2 right-2 bg-accent text-white p-1.5 rounded-full border-4 border-white dark:border-slate-800 shadow-lg">
@@ -111,7 +114,7 @@ export function UserProfilePage() {
                     <div className="flex-1 text-center md:text-left space-y-4">
                         <div>
                             <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">{userProfile!.name}</h1>
-                            {userProfile?.username  && <p className="text-slate-500 dark:text-slate-400 font-medium flex items-center justify-center md:justify-start gap-1.5 mt-1">
+                            {userProfile?.username && <p className="text-slate-500 dark:text-slate-400 font-medium flex items-center justify-center md:justify-start gap-1.5 mt-1">
                                 <span className="material-symbols-outlined text-xl">person</span> {userProfile.username}
                             </p>
                             }
@@ -214,70 +217,32 @@ export function UserProfilePage() {
                     <button className={`px-6 md:px-8 py-4 text-sm font-medium ${selectedTab === 'reels' ? 'border-b-2 border-primary text-primary' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'} transition-all`}
                         onClick={() => changeTab('reels')}>
                         Reels
-                    </button></div>
+                    </button>
+                </div>
 
                 {selectedTab === 'restaurants' && (<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                     {
-                        restaurants && restaurants.slice(0,2).map((restaurant)=>{
+                        restaurants && restaurants.slice(0, 2).map((restaurant) => {
                             return <SavedRestaurant restaurant={restaurant} />
                         })
                     }
-                    
+
 
                 </div>
                 )
                 }
 
-                {selectedTab === 'reviews' && (<div className="space-y-8">
+                {selectedTab === 'reviews' && (
 
-                    {
-                        reviews && reviews.map((review)=>{
-                            return <PostedReview review={review} setReviews={setReviews} />
-                        })
-                    }
+
+                    <UserReviews userId={params.id!} />
                     
-
-
-                </div>
                 )}
                 {selectedTab === 'reels' && (
 
-                    <div className="max-w-7xl mx-auto ">
-                        <div className="mt-12 p-8 text-white bg-slate-900 rounded-2xl hover:shadow-xl transition-all duration-300">
-                            <div className="flex items-center gap-2 mb-8">
-                                <span className="material-symbols-outlined text-primary text-3xl">camera</span>
-                                <h3 className="text-2xl font-bold">Yours</h3>
-                            </div>
-                            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-
-                                { reels && reels.user.map((reel)=>{
-                                    return <ReelCard reel={reel} />
-                                })
-                            }
-                            </div>
-                        </div>
-
-                        <div className="mt-12 p-8 bg-white rounded-2xl hover:shadow-xl transition-all duration-300">
-                            <div className="flex items-center gap-2 mb-8">
-                                <span className="material-symbols-outlined text-primary text-3xl">favorite</span>
-                                <h3 className="text-2xl font-bold">Favorites</h3>
-                            </div>
-                            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 text-white">
-                                { reels && reels.saved.map((reel)=>{
-                                    return <ReelCard reel={reel} />
-                                })}
-                            </div>
-                        </div>
-
-
-                    </div>
+                    <UserReels userId={params.id!} />
                 )}
-                {/* <div className="mt-8 text-center">
-                    <button className="px-6 py-2 border border-primary text-primary font-bold rounded-lg hover:bg-primary/5 transition-colors">
-                        Load More
-                    </button>
-                </div> */}
             </div>
 
         </main>

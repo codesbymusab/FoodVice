@@ -110,12 +110,10 @@ exports.updateViews = async (req, res) => {
 
 exports.getUserReels = async (req, res) => {
     try {
-        const limit = req.query.limit;
+    
         const userId = req.params.userId
-        const cursor = req.query.cursor
-        const reelRepo = new ReelRepoImpl()
-        const getReels = new GetUserReels(reelRepo)
-
+        const {userCursor,savedCursor,limit} = req.query
+     
         let limitNum=undefined
 
         if(limit && limit!=='undefined'){
@@ -124,9 +122,10 @@ exports.getUserReels = async (req, res) => {
                 limitNum=undefined
             }
         }
-
-        const reels = await getReels.execute({ limit:limitNum, userId, cursor });
-        res.json(reels);
+        const reelRepo = new ReelRepoImpl()
+        const getUserReels = new GetUserReels(reelRepo)
+        const result = await getUserReels.execute({ limit:limitNum, userId, savedCursor, userCursor });
+        res.status(200).json({success:true,message:"User Reels",...result})
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: err.message });
