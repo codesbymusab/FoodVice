@@ -16,7 +16,6 @@ import { LoadingDialog } from "../../Shared/Feedback";
 
 export type SimilarRestaurant = {
 
-    similarRestaurants: {
         _id: string,
         avgOverall?: number,
         restaurant: {
@@ -30,10 +29,10 @@ export type SimilarRestaurant = {
             _id: string,
             url: string,
         }
-    }[]
+    
 }
 
-export type Restaurant = {
+export type RestaurantDetail = {
     restaurant: {
         _id: string,
         name: string,
@@ -86,7 +85,8 @@ export type Restaurant = {
     rating?: Rating,
     reviewCount?: number,
     isSaved: boolean
-
+    recentReviews:Review[],
+    userReview:Review
 }
 
 type SelectedTab= 'Overview' |'Reviews' | 'Photos' | 'Reels'
@@ -106,10 +106,10 @@ const d = new Date()
 export function RestaurantDetailPage() {
     const params = useParams();
     const { location, loading: locationLoading } = useAppLocation();
-    const [restaurantDetails, setRestaurantDetails] = useState<Restaurant | null>(null);
-    const [similarRestaurants, setSimilarRestaurants] = useState<SimilarRestaurant | null>(null);
-    const [recentReviews, setRecentReviews] = useState<Review[] | null>(null)
-    const [userReview, setUserReview] = useState<Review[] | null>(null)
+    const [restaurantDetails, setRestaurantDetails] = useState<RestaurantDetail | null>(null);
+    const [similarRestaurants, setSimilarRestaurants] = useState<SimilarRestaurant[]>([]);
+    const [recentReviews, setRecentReviews] = useState<Review[]>([])
+    const [userReview, setUserReview] = useState<Review[]>([])
     const [aiSummary, setAiSummary] = useState<AISummary | null>(null)
     const [selectedTab,setSelectedTab]=useState<SelectedTab>('Overview')
 
@@ -121,8 +121,9 @@ export function RestaurantDetailPage() {
         try {
             const details = await fetchRestaurantDetails({ restaurantId: params.id!, location, userId: user?.userId });
             setRestaurantDetails(details);
-            if (details?.recentReviews) setRecentReviews(details.recentReviews)
-            if (details?.userReview) setUserReview([details.userReview])
+            console.log(restaurantDetails)
+            if (details.recentReviews) setRecentReviews(details.recentReviews)
+            if (details.userReview) setUserReview([details.userReview])
             if (details && details.restaurant?._id && details.restaurant?.name) {
               const summary = await fetchAISummary({
                 restaurantId: details.restaurant._id,
@@ -320,7 +321,7 @@ export function RestaurantDetailPage() {
 
                             </div>
                         </div>
-                        {similarRestaurants && similarRestaurants.similarRestaurants.length > 0 && (
+                        { similarRestaurants.length > 0 && (
                             <div>
                                 <h4 className="text-lg font-bold mb-4">People Also Liked</h4>
 
@@ -328,7 +329,7 @@ export function RestaurantDetailPage() {
                                 <div className="space-y-4">
 
                                     {
-                                        similarRestaurants?.similarRestaurants.map((r) => {
+                                        similarRestaurants.map((r) => {
                                             return (
                                                 <div key={r._id} className="flex gap-4 group" onClick={() => navigate(`/restaurant/${r._id}`)}>
                                                     {r.media && (

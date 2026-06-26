@@ -3,7 +3,7 @@ import { useAuth } from "../../../context/AuthContext"
 import { toggleLikeReview as toggleLikeReviewApi, type Review } from "../../../apis/reviews"
 
 
-export function ReviewTile({ review, setReviews }: { review: Review, setReviews: Dispatch<SetStateAction<Review[] | null>> }) {
+export function ReviewTile({ review, setReviews }: { review: Review, setReviews: Dispatch<SetStateAction<Review[]>> }) {
 
     const { user } = useAuth()
 

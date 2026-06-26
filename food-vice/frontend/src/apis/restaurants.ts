@@ -1,4 +1,6 @@
 import type { Filter } from "../components/Pages/Explore/ExplorePage";
+import type { Photo } from "../components/Pages/RestaurantDetail/Photos";
+import type { RestaurantDetail, SimilarRestaurant } from "../components/Pages/RestaurantDetail/RestaurantDetailPage";
 
 const API_BASE = import.meta.env.VITE_API_BASE
 
@@ -74,7 +76,7 @@ export async function fetchTopRatedRestaurants({ userId, filters, location,curso
     }
 }
 
-export async function fetchTrendingRestaurants({ location,maxDistance = null }: { location: [number, number] | null ,maxDistance:number|null}) {
+export async function fetchTrendingRestaurants({ location,maxDistance = null }: { location: [number, number] | null ,maxDistance:number|null}): Promise<TrendingRestaurant[]> {
 
     
     try {
@@ -88,12 +90,16 @@ export async function fetchTrendingRestaurants({ location,maxDistance = null }: 
             return details
 
         }
+        else {
+            throw new Error('Failed to load Trending restaurants')
+        }
     } catch (error) {
         console.error(error);
+        throw error
     }
 }
 
-export async function fetchNearbyRestaurants({ userId, filters, location }: { userId: string, filters: Filter | null, location: [number, number] | null }) {
+export async function fetchNearbyRestaurants({ userId, filters, location }: { userId: string, filters: Filter | null, location: [number, number] | null }): Promise<TopRatedRestaurant[]> {
 
     const searchfilters = {
         cuisine: filters?.cuisine ?? 'All',
@@ -108,16 +114,19 @@ export async function fetchNearbyRestaurants({ userId, filters, location }: { us
         );
         if (res.ok) {
             const { details } = await res.json();
-
             return details
 
         }
+        else {
+            throw new Error('Failed to load Nearby restaurants')
+        }
     } catch (error) {
         console.error(error);
+        throw error
     }
 }
 
-export async function fetchRecommendedRestaurants({ userId, filters, location,cursor }: { userId: string, filters: Filter | null, location: [number, number] | null, cursor?:string })  : Promise<{data:RecommendedRestaurant[],pagination?: cursorPagination}| undefined> {
+export async function fetchRecommendedRestaurants({ userId, filters, location,cursor }: { userId: string, filters: Filter | null, location: [number, number] | null, cursor?:string })  : Promise<{data:RecommendedRestaurant[],pagination?: cursorPagination}> {
     const searchfilters = {
         cuisine: filters?.cuisine ?? 'All',
         price: filters?.price ?? '',
@@ -135,13 +144,16 @@ export async function fetchRecommendedRestaurants({ userId, filters, location,cu
            
             return { data: result.data,pagination: result.pagination}
 
+        }else {
+            throw new Error('Failed to load Recommended restaurants')
         }
     } catch (error) {
         console.error(error);
+        throw error
     }
 } 
 
-export async function saveRestaurant({ userId, restId }: { userId: string, restId: string }) {
+export async function saveRestaurant({ userId, restId }: { userId: string, restId: string }): Promise<void | false> {
 
     try {
         const res = await fetch(`${API_BASE}/save/restaurant`, {
@@ -166,7 +178,7 @@ export async function saveRestaurant({ userId, restId }: { userId: string, restI
 }
 
 
-export async function fetchPhotos({ restId }: { restId: string }) {
+export async function fetchPhotos({ restId }: { restId: string }): Promise<Photo[]> {
     try {
         const res = await fetch(
             `${API_BASE}/restaurant/photos/${restId}`,
@@ -181,10 +193,12 @@ export async function fetchPhotos({ restId }: { restId: string }) {
         }
     } catch (error) {
         console.error(error);
+        throw error
     }
+
 }
 
-export async function fetchRestaurantDetails({ restaurantId, location, userId }: { restaurantId: string; location: [number, number] | null; userId?: string }) {
+export async function fetchRestaurantDetails({ restaurantId, location, userId }: { restaurantId: string; location: [number, number] | null; userId?: string }): Promise<RestaurantDetail> {
     try {
         const res = await fetch(
             `${API_BASE}/restaurant/details/${restaurantId}?lat=${location?.[0]}&lon=${location?.[1]}&userId=${userId}`,
@@ -203,7 +217,7 @@ export async function fetchRestaurantDetails({ restaurantId, location, userId }:
     }
 }
 
-export async function fetchSimilarRestaurants({ restaurantId, location }: { restaurantId: string; location: [number, number] | null }) {
+export async function fetchSimilarRestaurants({ restaurantId, location }: { restaurantId: string; location: [number, number] | null }): Promise<SimilarRestaurant[]> {
     try {
         const res = await fetch(
             `${API_BASE}/restaurant/similar/${restaurantId}?lat=${location?.[0]}&lon=${location?.[1]}`,
@@ -222,7 +236,7 @@ export async function fetchSimilarRestaurants({ restaurantId, location }: { rest
     }
 }
 
-export async function updateViews({ restId,userId }: { restId: string,userId:string }) {
+export async function updateViews({ restId,userId }: { restId: string,userId:string }): Promise<void> {
     try {
         await fetch(`${API_BASE}/restaurant/${restId}/view`, {
             method:"POST",

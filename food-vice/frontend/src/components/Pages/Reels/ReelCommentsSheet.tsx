@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../../../context/AuthContext";
 import { fetchComments, postComment, toggleCommentLike } from "../../../apis/reels";
 
-type ReelComment = {
+export type ReelComment = {
   _id: string;
   text: string;
   createdAt: string;

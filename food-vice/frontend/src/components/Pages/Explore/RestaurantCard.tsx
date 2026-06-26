@@ -25,7 +25,7 @@ export type TopRatedRestaurant =
 export type RecommendedRestaurant = TopRatedRestaurant
     
 
-export function RestaurantCard({ restaurant, setTopRatedRestaurants }: { restaurant: TopRatedRestaurant, setTopRatedRestaurants: Dispatch<SetStateAction<TopRatedRestaurant[] | null>> }) {
+export function RestaurantCard({ restaurant, setTopRatedRestaurants }: { restaurant: TopRatedRestaurant, setTopRatedRestaurants: Dispatch<SetStateAction<TopRatedRestaurant[]>> }) {
     const navigate = useNavigate()
     const { user } = useAuth()
 

@@ -28,7 +28,7 @@ export async function fetchAIRecommendations({
   query: string;
   location: [number, number] | null;
   userId?: string;
-}): Promise<AIRecommendation[] | null> {
+}): Promise<AIRecommendation[]> {
   try {
     const res = await fetch(`${BASE_URL}/ai/recommendations`, {
       method: 'POST',

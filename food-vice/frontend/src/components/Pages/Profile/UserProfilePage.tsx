@@ -7,7 +7,6 @@ import { fetchUserProfile as loadUserProfileData, fetchSavedRestaurants} from ".
 import type { Restaurant } from "../RestaurantDetail/RestaurantDetailPage";
 import { useAuth } from "../../../context/AuthContext";
 import { LoadingDialog } from "../../Shared/Feedback";
-import type { Review } from "../../../apis/reviews";
 import { UserReels } from "./Sections/UserReels";
 import { UserReviews } from "./Sections/UserReviews";
 

@@ -7,7 +7,7 @@ import { fetchRecentReels, type Reel } from "../../../../apis/reels";
 export function Reels() {
 
 
-    const [reels, setReels] = useState<Reel[] | null>(null)
+    const [reels, setReels] = useState<Reel[]>([])
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<string | null>(null)
     const { user } = useAuth()
@@ -16,7 +16,7 @@ export function Reels() {
         setError(null)
         try {
             const result = await fetchRecentReels({ userId: user!.userId, tag: 'All' });
-            setReels(result?.data ?? null);
+            setReels(result?.data);
                         
         } catch (error) {
             console.error(error);

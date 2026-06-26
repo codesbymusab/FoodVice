@@ -10,10 +10,10 @@ import type { Review } from "../../../apis/reviews";
 
 type OverviewProps = {
     restaurantDetails: Restaurant,
-    userReview: Review[] | null,
-    recentReviews: Review[] | null,
-    setUserReview: Dispatch<SetStateAction<Review[] | null>>,
-    setRecentReviews: Dispatch<SetStateAction<Review[] | null>>,
+    userReview: Review[],
+    recentReviews: Review[],
+    setUserReview: Dispatch<SetStateAction<Review[]>>,
+    setRecentReviews: Dispatch<SetStateAction<Review[]>>,
     aiSummary?: AISummary | null,
     fetchRestaurant: (location: [number, number] | null) => Promise<void>,
     location: [number, number] | null
@@ -76,7 +76,7 @@ export function Overview({ restaurantDetails, userReview, recentReviews, setUser
 
                         <>
 
-                            {userReview &&
+                            {userReview.length > 0 &&
                                 (
                                     <div className="mb-6">
                                         <h3 className="text-xl font-bold mb-6">Your Review</h3>
@@ -84,7 +84,7 @@ export function Overview({ restaurantDetails, userReview, recentReviews, setUser
                                         <div className="space-y-8 bg-white rounded-3xl p-4">
                                             {
 
-                                                userReview?.map((review) => {
+                                                userReview.map((review) => {
                                                     return <ReviewTile key={review._id} review={review} setReviews={setUserReview} />
                                                 })
 
@@ -98,7 +98,7 @@ export function Overview({ restaurantDetails, userReview, recentReviews, setUser
                             <div className="flex items-center justify-between mb-6 ">
                                 <h3 className="text-xl font-bold">Recent Reviews</h3>
 
-                                {!userReview && (<button className="flex items-center justify-center gap-2 text-primary font-bold text-sm hover:scale-110" onClick={() => { setShowReviewForm((prev) => !prev) }}>
+                                {userReview.length=== 0 && (<button className="flex items-center justify-center gap-2 text-primary font-bold text-sm hover:scale-110" onClick={() => { setShowReviewForm((prev) => !prev) }}>
                                     <span className="material-symbols-outlined text-lg">edit</span> <span className="hover:underline underline-offset-4">Write a Review</span>
                                 </button>)
 
@@ -106,7 +106,7 @@ export function Overview({ restaurantDetails, userReview, recentReviews, setUser
                             </div>
 
 
-                            {recentReviews!.length > 0 ? <div className="space-y-8 bg-white rounded-3xl p-4">
+                            {recentReviews.length > 0 ? <div className="space-y-8 bg-white rounded-3xl p-4">
                                 {
                                     recentReviews!.map((review) => {
                                         return <ReviewTile key={review._id} review={review} setReviews={setRecentReviews} />
@@ -116,7 +116,7 @@ export function Overview({ restaurantDetails, userReview, recentReviews, setUser
 
                             </div>
                                 :
-                                !userReview && <div className="mt-24 flex text-xl justify-center items-center text-slate-600 font-bold">
+                                userReview.length===0 && <div className="mt-24 flex text-xl justify-center items-center text-slate-600 font-bold">
                                     Be the first to review this restaurant
                                 </div>
                             }

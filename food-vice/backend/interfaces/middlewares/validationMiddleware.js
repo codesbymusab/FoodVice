@@ -6,7 +6,8 @@ exports.validateRequest = (schema) => (req, res, next) => {
 
     if (result.success) {
 
-        req.body = result.body
+        req.body = result.data
+    
         next()
     }
     else {

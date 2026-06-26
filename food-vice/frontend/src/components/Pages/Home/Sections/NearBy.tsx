@@ -9,7 +9,7 @@ import { useAppLocation } from "../../../../context/LocationContext";
 
 export function Nearby() {
     const { location } = useAppLocation()
-    const [nearbyRestaurants, setNearbyRestaurants] = useState<TopRatedRestaurant[] | null>(null);
+    const [nearbyRestaurants, setNearbyRestaurants] = useState<TopRatedRestaurant[]>([]);
     const { user } = useAuth()
 
 

@@ -17,7 +17,7 @@ import { ErrorScreen } from '../../Shared/Feedback'
 export function HomePage() {
 
     const { location, loading, error, fetchLocation } = useAppLocation();
-    const [cuisines, setCuisines] = useState<Cuisine[] | null>(null)
+    const [cuisines, setCuisines] = useState<Cuisine[]>([])
     const [filters, setFilters] = useState<Filter|null>({
         cuisine: 'All',
         price: "",
@@ -40,7 +40,9 @@ export function HomePage() {
 
    
 
-    useEffect(() => { loadCuisines() }, [])
+    useEffect(() => { 
+        loadCuisines() },
+    [])
 
     if (loading) {
         return (

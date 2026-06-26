@@ -1,6 +1,6 @@
 import type { Cuisine, Filter } from "./ExplorePage";
 
-type FiltersSidebarProps = { cuisines: Cuisine[] | null, filters: Filter, setFilters: React.Dispatch<React.SetStateAction<Filter>>, applyFilters: () => Promise<void> }
+type FiltersSidebarProps = { cuisines: Cuisine[], filters: Filter, setFilters: React.Dispatch<React.SetStateAction<Filter>>, applyFilters: () => Promise<void> }
 
 
 export function FiltersSidebar({ cuisines, filters, setFilters, applyFilters}: FiltersSidebarProps) {
@@ -42,7 +42,7 @@ export function FiltersSidebar({ cuisines, filters, setFilters, applyFilters}: F
 
                         </label>
                         {
-                            cuisines && cuisines.slice(0, 5).map((cuisine) => {
+                            cuisines.slice(0, 5).map((cuisine) => {
                                 return (
                                     <label key={cuisine._id} className={`flex items-center gap-3 p-2 rounded-lg ${filters.cuisine === cuisine.name && 'bg-primary/10 text-primary font-semibold'} cursor-pointer`} onClick={() => setFilters({ ...filters, cuisine: cuisine.name })}>
 

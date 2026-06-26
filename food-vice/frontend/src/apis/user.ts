@@ -1,22 +1,23 @@
-export interface User {
-    userId: string;
-    email: string;
-    name?: string;
-    username: string;
-    profilePhoto: string;
-    address?: string,
-    bio?: string;
-    level: number;
-    role?: 'user' | 'moderator' | 'admin';
-    banReason: string | null;
-    banUntil: Date | null;
-    banned: boolean
-
+export type  User =  {
+  userId: string;
+  email: string;
+  name?: string;
+  username: string;
+  profilePhoto?: string;
+  address?: string;
+  bio?: string;
+  level: number;
+  role?: 'user' | 'moderator' | 'admin';
+  dateJoined: Date;  
+  banned: boolean,
+  banReason: string,
+  banUntil: Date
+  status:string
 }
 
 const API_BASE = import.meta.env.VITE_API_BASE
 
-export const fetchUser = async () => {
+export const fetchUser = async (): Promise<User | null > => {
 
 
 
@@ -42,10 +43,12 @@ export const fetchUser = async () => {
         }
     } catch (err) {
         console.error(err)
+        throw(err)
     }
 };
 
-export async function loginUser({ email, password }: { email: string; password: string }) {
+export async function loginUser({ email, password }: { email: string; password: string }): Promise<User|null> {
+    
     try {
         const res = await fetch(`${API_BASE}/auth/login`, {
             method: "POST",
@@ -59,14 +62,21 @@ export async function loginUser({ email, password }: { email: string; password: 
         }
 
         const data = await res.json();
-        return data.user;
+         if (data.user) {
+            return data.user
+
+        }
+        else {
+            return null
+
+        }
     } catch (err) {
         console.error(err);
-        throw err;
+        throw(err);
     }
 }
 
-export async function loginWithGoogle(access_token: string) {
+export async function loginWithGoogle(access_token: string): Promise<User|null> {
     try {
         const res = await fetch(`${API_BASE}/auth/google`, {
             method: "POST",
@@ -80,14 +90,21 @@ export async function loginWithGoogle(access_token: string) {
         }
 
         const data = await res.json();
-        return data.user;
+         if (data.user) {
+            return data.user
+
+        }
+        else {
+            return null
+
+        }
     } catch (err) {
         console.error(err);
         throw err;
     }
 }
 
-export async function signUpUser({ name, username, email, password, confirmPassword }: { name: string; username: string; email: string; password: string; confirmPassword: string }) {
+export async function signUpUser({ name, username, email, password, confirmPassword }: { name: string; username: string; email: string; password: string; confirmPassword: string }): Promise<User|null> {
     try {
         const res = await fetch(`${API_BASE}/auth/signup`, {
             method: "POST",
@@ -101,14 +118,21 @@ export async function signUpUser({ name, username, email, password, confirmPassw
         }
 
         const data = await res.json();
-        return data.user;
+         if (data.user) {
+            return data.user
+
+        }
+        else {
+            return null
+
+        }
     } catch (err) {
         console.error(err);
         throw err;
     }
 }
 
-export async function signOutUser() {
+export async function signOutUser(): Promise<boolean> {
     try {
         const res = await fetch(`${API_BASE}/auth/signout`, {
             credentials: "include",

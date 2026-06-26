@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { useNavigate } from "react-router";
-import type { Reel } from "../../Reels/ReelsPage";
+import type { Reel } from "../../../../apis/reels";
 
 export function ReelCard({ reel }: { reel: Reel }) {
   const navigate = useNavigate();

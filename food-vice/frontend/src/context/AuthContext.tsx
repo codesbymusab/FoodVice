@@ -11,24 +11,8 @@ import type {
   SetStateAction,
 } from "react"
 
-import { fetchUser as fetchUserApi } from "../apis/user";
+import { fetchUser as fetchUserApi, type User } from "../apis/user";
 
-interface User {
-  userId: string;
-  email: string;
-  name?: string;
-  username: string;
-  profilePhoto?: string;
-  address?: string;
-  bio?: string;
-  level: number;
-  role?: 'user' | 'moderator' | 'admin';
-  dateJoined: Date;  
-  banned: boolean,
-  banReason: string,
-  banUntil: Date
-  status:string
-}
 
 
 interface AuthContextType {

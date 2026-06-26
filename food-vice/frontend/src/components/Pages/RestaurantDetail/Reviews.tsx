@@ -6,13 +6,13 @@ import type { cursorPagination } from "../../../apis/restaurants"
 
 type ReviewProps = {
 
-    userReview: Review[] | null,
-    setUserReview: Dispatch<React.SetStateAction<Review[] | null>>,
+    userReview: Review[],
+    setUserReview: Dispatch<React.SetStateAction<Review[]>>,
 }
 export function Reviews({ userReview, setUserReview }: ReviewProps) {
     const params = useParams()
 
-    const [reviews, setReviews] = useState<Review[] | null>(null)
+    const [reviews, setReviews] = useState<Review[]>([])
     const [reviewsPagination, setReviewsPagination] = useState<cursorPagination | null>()
     async function loadReviews() {
         try {
@@ -38,7 +38,7 @@ export function Reviews({ userReview, setUserReview }: ReviewProps) {
     return (
         <section className="lg:col-span-2 space-y-10 p-8 rounded-xl">
 
-            {userReview &&
+            {userReview.length>0 &&
                 (
                     <div className="mb-6">
                         <h3 className="text-xl font-bold mb-6">Your Review</h3>
@@ -46,7 +46,7 @@ export function Reviews({ userReview, setUserReview }: ReviewProps) {
                         <div className="space-y-8 bg-white rounded-3xl p-4">
                             {
 
-                                userReview?.map((review) => {
+                                userReview.map((review) => {
                                     return <ReviewTile key={review._id} review={review} setReviews={setUserReview} />
                                 })
 

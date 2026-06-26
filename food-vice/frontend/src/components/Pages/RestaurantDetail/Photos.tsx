@@ -2,19 +2,19 @@ import { useEffect, useState } from "react"
 import { useParams } from "react-router"
 import { fetchPhotos } from "../../../apis/restaurants"
 
-type Photo = {
+export type Photo = {
     _id: string,
     url: string,
 }
 export function Photos() {
     const params = useParams()
 
-    const [photos, setPhotos] = useState<Photo[] | null>(null)
+    const [photos, setPhotos] = useState<Photo[]>([])
 
     async function loadPhotos() {
         try {
             const photos = await fetchPhotos({ restId: params.id! });
-            setPhotos(photos ?? null);
+            setPhotos(photos);
         } catch (error) {
             console.error(error);
         }

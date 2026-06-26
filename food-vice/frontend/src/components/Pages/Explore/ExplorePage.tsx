@@ -27,18 +27,18 @@ function ExplorePage() {
 
   const { user } = useAuth()
   const { location, loading: locationLoading, error: locationError, fetchLocation } = useAppLocation();
-  const [topRatedRestaurants, setTopRatedRestaurants] = useState<TopRatedRestaurant[] | null>(null);
-  const [recommendedRestaurants, setRecommendedRestaurants] = useState<RecommendedRestaurant[] | null>(null);
+  const [topRatedRestaurants, setTopRatedRestaurants] = useState<TopRatedRestaurant[]>([]);
+  const [recommendedRestaurants, setRecommendedRestaurants] = useState<RecommendedRestaurant[]>([]);
   const [topRatedPagination,setTopRatedPagination]=useState<cursorPagination|null>(null)
   const [recommendedPagination,setRecommendedPagination]=useState<cursorPagination|null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [aiRecommendations, setAIRecommendations] = useState<AIRecommendation[] | null>(null);
+  const [aiRecommendations, setAIRecommendations] = useState<AIRecommendation[]>([]);
   const [aiLoading, setAILoading] = useState<boolean>(false);
   const [aiError, setAIError] = useState<string | null>(null);
   const [mapView, setMapView] = useState<boolean>(false)
-  const [cuisines, setCuisines] = useState<Cuisine[] | null>(null)
+  const [cuisines, setCuisines] = useState<Cuisine[]>([])
   const [filters, setFilters] = useState<Filter>({
     cuisine: 'All',
     price: "",
@@ -57,7 +57,7 @@ function ExplorePage() {
         setTopRatedRestaurants([...recommendedRestaurants!,...result!.data])
       }
       else{
-        setTopRatedRestaurants(result?.data ?? null);
+        setTopRatedRestaurants(result?.data ?? []);
       }
       setTopRatedPagination(result?.pagination ?? null) 
     } catch (error) {
@@ -76,7 +76,7 @@ function ExplorePage() {
         setRecommendedRestaurants([...recommendedRestaurants!,...result!.data])
       }
       else{
-        setRecommendedRestaurants(result?.data ?? null)
+        setRecommendedRestaurants(result?.data ?? [])
       }
       setRecommendedPagination(result?.pagination ?? null) 
     } catch (error) {
@@ -90,7 +90,7 @@ function ExplorePage() {
   async function loadCuisines() {
     try {
       const result = await fetchCuisines();
-      setCuisines(result ?? null);
+      setCuisines(result);
     } catch (error) {
       console.error(error);
     }
@@ -120,14 +120,14 @@ function ExplorePage() {
 
   async function loadAIRecommendations() {
     if (!searchQuery.trim()) {
-      setAIRecommendations(null);
+      setAIRecommendations([]);
       setAIError(null);
       return;
     }
 
     if (!location) {
       setAIError('Location is required for AI recommendations.');
-      setAIRecommendations(null);
+      setAIRecommendations([]);
       return;
     }
 
@@ -145,7 +145,7 @@ function ExplorePage() {
       }
     } catch (error) {
       console.error(error);
-      setAIRecommendations(null);
+      setAIRecommendations([]);
       setAIError('Unable to fetch AI recommendations.');
     } finally {
       setAILoading(false);

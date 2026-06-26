@@ -1,3 +1,4 @@
+import type { ReelComment } from "../components/Pages/Reels/ReelCommentsSheet"
 import type { cursorPagination } from "./restaurants"
 
 export type ReelsMode = 'for-you' | 'following' | 'discover'
@@ -42,7 +43,7 @@ export type SuggestedAccount = {
 
 const API_BASE = import.meta.env.VITE_API_BASE
 
-export async function fetchRecentReels({ userId, tag, cursor }: { userId: string, tag: string | null, cursor?:string }):Promise<{data:Reel[],pagination?: cursorPagination}| undefined>{
+export async function fetchRecentReels({ userId, tag, cursor }: { userId: string, tag: string | null, cursor?:string }):Promise<{data:Reel[],pagination?: cursorPagination}>{
     try {
 
         const res = await fetch(
@@ -59,11 +60,12 @@ export async function fetchRecentReels({ userId, tag, cursor }: { userId: string
         }
     } catch (error) {
         console.error(error);
+        throw error
     }
 
 }
 
-export async function fetchReelById({ reelId, userId }: { userId: string, reelId: string }) {
+export async function fetchReelById({ reelId, userId }: { userId: string, reelId: string }): Promise<Reel[]> {
     try {
 
         const res = await fetch(
@@ -81,12 +83,13 @@ export async function fetchReelById({ reelId, userId }: { userId: string, reelId
         }
     } catch (error) {
         console.error(error);
+        throw error
     }
 
 }
 
 
-export async function updateViews({ reelId }: { reelId: string }) {
+export async function updateViews({ reelId }: { reelId: string }): Promise<void> {
     try {
         await fetch(`${API_BASE}/reels/${reelId}/view`, {
             method: "POST",
@@ -94,11 +97,12 @@ export async function updateViews({ reelId }: { reelId: string }) {
         });
     } catch (error) {
         console.error("Error tracking view:", error);
+        throw error
     }
 }
 
 
-export async function fetchComments({ userId, reelId }: { userId: string, reelId: string }) {
+export async function fetchComments({ userId, reelId }: { userId: string, reelId: string }): Promise<ReelComment[]> {
     try {
         const res = await fetch(
             `${API_BASE}/comments/${reelId}?userId=${userId}`,
@@ -112,10 +116,11 @@ export async function fetchComments({ userId, reelId }: { userId: string, reelId
         }
     } catch (error) {
         console.error("Error fetching comments:", error);
+        throw error
     }
 }
 
-export async function postComment({ reelId, userId, newComment }: { reelId: string, userId: string, newComment: string }) {
+export async function postComment({ reelId, userId, newComment }: { reelId: string, userId: string, newComment: string }): Promise<void> {
     if (!newComment.trim()) return;
     try {
         const res = await fetch(`${API_BASE}/comments/${reelId}`, {
@@ -129,10 +134,11 @@ export async function postComment({ reelId, userId, newComment }: { reelId: stri
 
     } catch (error) {
         console.error("Error posting comment:", error);
+        throw error
     }
 }
 
-export async function toggleCommentLike({ commentId, userId }: { commentId: string, userId: string }) {
+export async function toggleCommentLike({ commentId, userId }: { commentId: string, userId: string }): Promise<void> {
     try {
         const res = await fetch(`${API_BASE}/like/reel/comment`, {
             method: "POST",
@@ -144,12 +150,13 @@ export async function toggleCommentLike({ commentId, userId }: { commentId: stri
 
     } catch (error) {
         console.error("Error toggling comment like:", error);
+        throw error
     }
 }
 
 
 
-export async function uploadReel({ formData, userId }: { formData: FormData, userId: string }) {
+export async function uploadReel({ formData, userId }: { formData: FormData, userId: string }): Promise<void> {
     try {
 
         formData.append("userId", userId)
@@ -168,11 +175,11 @@ export async function uploadReel({ formData, userId }: { formData: FormData, use
 
     } catch (err) {
         console.error("Error uploading reel:", err);
-
+        throw err
     }
 }
 
-export async function fetchPopularTags() {
+export async function fetchPopularTags(): Promise<ReelTag[]> {
     try {
 
         const res = await fetch(
@@ -188,11 +195,12 @@ export async function fetchPopularTags() {
         }
     } catch (error) {
         console.error(error);
+        throw error
     }
 
 }
 
-export async function fetchSuggestedAccounts({ userId }: { userId: string }) {
+export async function fetchSuggestedAccounts({ userId }: { userId: string }): Promise<SuggestedAccount[]> {
     try {
 
         const res = await fetch(
@@ -208,13 +216,14 @@ export async function fetchSuggestedAccounts({ userId }: { userId: string }) {
         }
     } catch (error) {
         console.error(error);
+        throw error
     }
 
 }
 
 
 
-export async function fetchFollowersReels({ userId, tag, cursor }: { userId: string, tag: string | null, cursor?:string }):Promise<{data:Reel[],pagination?: cursorPagination}| undefined> {
+export async function fetchFollowersReels({ userId, tag, cursor }: { userId: string, tag: string | null, cursor?:string }):Promise<{data:Reel[],pagination?: cursorPagination}> {
     try {
 
         const res = await fetch(
@@ -232,11 +241,12 @@ export async function fetchFollowersReels({ userId, tag, cursor }: { userId: str
         }
     } catch (error) {
         console.error(error);
+        throw error
     }
 
 }
 
-export async function saveReel(userId: string, reelId: string) {
+export async function saveReel(userId: string, reelId: string): Promise<void | false> {
 
     try {
         const res = await fetch(`${API_BASE}/save/reel`, {
@@ -265,7 +275,7 @@ export async function toggleLikeReel({ userId, reelId }: {
 
 }
 
-) {
+): Promise<void> {
 
 
 
@@ -284,13 +294,13 @@ export async function toggleLikeReel({ userId, reelId }: {
 
     } catch (err) {
         console.error(err);
-
+        throw err
     }
 }
 
 
 
-export async function fetchReels({ reelId }: { reelId: string }) {
+export async function fetchReels({ reelId }: { reelId: string }): Promise<Reel[]> {
     try {
         const res = await fetch(
             `${API_BASE}/restaurant/reels/${reelId}`,
@@ -305,5 +315,6 @@ export async function fetchReels({ reelId }: { reelId: string }) {
         }
     } catch (error) {
         console.error(error);
+        throw error
     }
 }

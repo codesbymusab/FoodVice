@@ -7,7 +7,7 @@ import type { cursorPagination } from "../../../../apis/restaurants";
 
 export function Reviews() {
 
-    const [reviews, setReviews] = useState<Review[] | null>(null)
+    const [reviews, setReviews] = useState<Review[]>([])
     const [reviewsPagination, setReviewsPagination] = useState<cursorPagination | null>(null)
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<string | null>(null)

@@ -18,11 +18,11 @@ export function ReelsPage() {
     const [uploading, setUploading] = useState<boolean>(false)
     const [progress, setProgress] = useState<number>(0)
     const [loading, setLoading] = useState<boolean>(false)
-    const [reels, setReels] = useState<Reel[] | null>(null)
-    const [popularTags, setPopularTags] = useState<ReelTag[] | null>(null)
+    const [reels, setReels] = useState<Reel[]>([])
+    const [popularTags, setPopularTags] = useState<ReelTag[]>([])
     const [error, setError] = useState<string | null>(null)
     const [selectedtag, setSelectedTag] = useState<string | null>(params.id ? null : 'All')
-    const [suggestedAccounts, setSuggestedAccounts] = useState<SuggestedAccount[] | null>(null)
+    const [suggestedAccounts, setSuggestedAccounts] = useState<SuggestedAccount[]>([])
     const [reelsPagination, setReelsPagination] = useState<cursorPagination | null>(null)
 
     const navigate = useNavigate()
@@ -82,7 +82,7 @@ export function ReelsPage() {
             if (reelsPagination?.cursor && result) {
                 setReels([ ...reels!, ...result!.data ]);
             } else {
-                setReels(result?.data ?? null);
+                setReels(result?.data ?? []);
             }
             setReelsPagination(result?.pagination ?? null)
         } catch (error) {

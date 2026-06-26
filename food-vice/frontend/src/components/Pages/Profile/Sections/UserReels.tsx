@@ -7,8 +7,8 @@ import { ReelCard } from "../../Home/Cards/ReelCard";
 
 export function UserReels({ userId }: { userId: string }) {
 
-    const [userReels, setUserReels] = useState<Reel[] | null>(null);
-    const [savedReels, setSavedReels] = useState<Reel[] | null>(null);
+    const [userReels, setUserReels] = useState<Reel[]>([]);
+    const [savedReels, setSavedReels] = useState<Reel[]>([]);
     const [savedReelsPagination, setSavedReelsPagination] = useState<cursorPagination | null>(null)
     const [userReelsPagination, setUserReelsPagination] = useState<cursorPagination | null>(null)
 

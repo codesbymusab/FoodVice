@@ -1,3 +1,5 @@
+import type { UserProfile } from "../components/Pages/Profile/UserProfilePage";
+import type { Restaurant } from "../components/Pages/RestaurantDetail/RestaurantDetailPage";
 import type { Reel } from "./reels";
 import type { cursorPagination } from "./restaurants";
 import type { Review } from "./reviews";
@@ -9,7 +11,7 @@ export type UserReels={
     user:Reel[]
 }
 
-export async function fetchUserProfile(userId: string) {
+export async function fetchUserProfile(userId: string): Promise<UserProfile> {
     try {
         const res = await fetch(`${API_BASE}/user/profile/${userId}`, {
             credentials: "include",
@@ -23,11 +25,11 @@ export async function fetchUserProfile(userId: string) {
         return data;
     } catch (error) {
         console.error(error);
-        throw error;
+        throw(error);
     }
 }
 
-export async function fetchSavedRestaurants(userId: string) {
+export async function fetchSavedRestaurants(userId: string): Promise<Restaurant[]> {
     try {
         const res = await fetch(`${API_BASE}/restaurant/saved?userId=${userId}`, {
             credentials: "include",
@@ -41,11 +43,11 @@ export async function fetchSavedRestaurants(userId: string) {
         return data;
     } catch (error) {
         console.error(error);
-        throw error;
+        throw(error);
     }
 }
 
-export async function fetchUserReels(userId: string):Promise<{saved:{data:Reel[]; pagination?:cursorPagination}; user:{data:Reel[]; pagination?:cursorPagination}}|undefined> {
+export async function fetchUserReels(userId: string):Promise<{saved:{data:Reel[]; pagination?:cursorPagination}; user:{data:Reel[]; pagination?:cursorPagination}}> {
     try {
         const res = await fetch(`${API_BASE}/reels/${userId}`, {
             credentials: "include",
@@ -63,7 +65,7 @@ export async function fetchUserReels(userId: string):Promise<{saved:{data:Reel[]
     }
 }
 
-export async function fetchUserReviews(userId: string):Promise<{data:Review[]; pagination?:cursorPagination}|undefined> {
+export async function fetchUserReviews(userId: string):Promise<{data:Review[]; pagination?:cursorPagination}> {
     try {
         const res = await fetch(`${API_BASE}/reviews/user/${userId}`, {
             credentials: "include",
@@ -81,7 +83,7 @@ export async function fetchUserReviews(userId: string):Promise<{data:Review[]; p
     }
 }
 
-export async function editUserProfile(formData: FormData) {
+export async function editUserProfile(formData: FormData): Promise<UserProfile> {
     try {
         const res = await fetch(`${API_BASE}/user/edit`, {
             method: "PUT",

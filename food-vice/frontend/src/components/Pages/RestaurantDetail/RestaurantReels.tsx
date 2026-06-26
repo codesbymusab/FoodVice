@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router"
-import { ReelCard } from "../Reels/ReelCard"
-import { fetchReels } from "../../../apis/reels"
+import { fetchReels, type Reel } from "../../../apis/reels"
 
-type Photo = {
+export type Photo = {
     _id: string,
     url: string,
 }
 export function Reels() {
     const params = useParams()
 
-    const [reels, setReels] = useState<Photo[] | null>(null)
+    const [reels, setReels] = useState<Reel[]>([])
 
     async function loadReels() {
         try {

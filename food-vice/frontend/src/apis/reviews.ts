@@ -33,7 +33,7 @@ export async function toggleLikeReview(
 
     }
 
-) {
+): Promise<void> {
 
 
     try {
@@ -51,13 +51,13 @@ export async function toggleLikeReview(
 
     } catch (err) {
         console.error(err);
-
+        throw(err)
 
     }
 }
 
 
-export async function fetchReviews({ restId,limit,cursor }: { restId: string, limit:number, cursor?:string }): Promise<{data:Review[], pagination?:cursorPagination}|undefined> {
+export async function fetchReviews({ restId,limit,cursor }: { restId: string, limit:number, cursor?:string }): Promise<{data:Review[], pagination?:cursorPagination}> {
     try {
         const res = await fetch(
             `${API_BASE}/reviews/${restId}?limit=${limit}${cursor ? `&cursor=${cursor}`:""}`,
@@ -71,34 +71,37 @@ export async function fetchReviews({ restId,limit,cursor }: { restId: string, li
         else {
             throw new Error('Failed to load reviews')
         }
-    } catch (error) {
-        console.error(error);
+    } catch (err) {
+        console.error(err);
+        throw(err)
     }
 }
 
 
 
-export async function fetchRecentReviews({ userId,limit,cursor }: { userId: string, limit:number, cursor?:string }): Promise<{data:Review[], pagination?:cursorPagination}|undefined> {
+export async function fetchRecentReviews({ userId,limit,cursor }: { userId: string, limit:number, cursor?:string }): Promise<{data:Review[], pagination?:cursorPagination}> {
     try {
         const res = await fetch(
             `${API_BASE}/reviews/recent?userId=${userId}&limit=${limit}${cursor ? `&cursor=${cursor}`:""}`,
             { credentials: "include" }
         );
-        if (res.ok) {
-            const result = await res.json();
-          
-            return result
+        if (!res.ok) {
+            throw new Error('Failed to load reviews')
+            
 
         }
-        else {
-            throw new Error('Failed to load reviews')
-        }
-    } catch (error) {
-        console.error(error);
+        const result = await res.json();
+          
+        return result
+            
+        
+    } catch (err) {
+        console.error(err);
+        throw(err)
     }
 }
 
-export async function createReview(formData: FormData) {
+export async function createReview(formData: FormData): Promise<boolean> {
     try {
         const res = await fetch(`${API_BASE}/reviews/create`, {
             method: "POST",
@@ -112,7 +115,7 @@ export async function createReview(formData: FormData) {
         return true;
     } catch (err) {
         console.error(err);
-        throw err;
+        throw(err);
     }
 }
 

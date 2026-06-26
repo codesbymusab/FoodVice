@@ -1,8 +1,8 @@
 import { useRef, useState, useEffect } from "react";
-import type { Reel } from "./ReelsPage";
+
 import { useAuth } from "../../../context/AuthContext";
 import { ReelCommentsSheet } from "./ReelCommentsSheet";
-import { updateViews } from "../../../apis/reels";
+import { updateViews, type Reel } from "../../../apis/reels";
 
 type ReelProps = {
     reel: Reel,

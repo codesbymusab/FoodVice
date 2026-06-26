@@ -4,7 +4,7 @@ import type { Dispatch, SetStateAction } from "react"
 import { useAuth } from "../../../../context/AuthContext"
 import { toggleLikeReview as toggleLikeReviewApi, type Review } from "../../../../apis/reviews"
 
-export function ReviewCard({ review, setReviews }: { review: Review, setReviews: Dispatch<SetStateAction<Review[] | null>> }) {
+export function ReviewCard({ review, setReviews }: { review: Review, setReviews: Dispatch<SetStateAction<Review[]>> }) {
 
     const navigate = useNavigate()
     const { user } = useAuth()

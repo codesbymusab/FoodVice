@@ -32,8 +32,7 @@ exports.signupUser = async (req, res) => {
 exports.loginUser = async (req, res) => {
 
     try {
-
-
+        
         const userRepo = new UserRepoImpl()
         const authRepo = new JWTAuthRepoImpl()
         const loginUser = new LoginUser(userRepo, authRepo)

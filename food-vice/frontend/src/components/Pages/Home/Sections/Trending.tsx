@@ -6,7 +6,7 @@ import { ErrorScreen, SkeletonTrendingList } from "../../../Shared/Feedback";
 
 export function Trending() {
 
-    const [trendingRestaurants, setTrendingRestaurants] = useState<TrendingRestaurant[] | null>(null);
+    const [trendingRestaurants, setTrendingRestaurants] = useState<TrendingRestaurant[]>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const { location } = useAppLocation()

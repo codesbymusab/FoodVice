@@ -189,7 +189,7 @@ export function SigninPage() {
 
                     <button 
                         className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" 
-                        onClick={async () => await googleLogin()}
+                        onClick={async () => { console.log(window.open); await googleLogin()}}
                         disabled={isSigningIn}
                     >
 

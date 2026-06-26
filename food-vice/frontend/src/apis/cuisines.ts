@@ -1,6 +1,8 @@
+import type { Cuisine } from "../components/Pages/Explore/ExplorePage";
+
 const API_BASE = import.meta.env.VITE_API_BASE
 
-export async function fetchCuisines() {
+export async function fetchCuisines(): Promise<Cuisine[]> {
     try {
         const res = await fetch(`${API_BASE}/restaurant/cuisines`, {
             credentials: 'include',
@@ -14,6 +16,6 @@ export async function fetchCuisines() {
         return data.result;
     } catch (error) {
         console.error(error);
-        throw error;
+        throw(error);
     }
 }
