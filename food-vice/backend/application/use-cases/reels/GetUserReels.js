@@ -8,7 +8,7 @@ class GetUserReels {
 
   async execute({ savedCursor,userCursor, limit, userId }) {
 
-    if (!userId) return new Error('UserId required')
+    if (!userId) throw new Error('UserId required')
 
     let limitCap = limit
 

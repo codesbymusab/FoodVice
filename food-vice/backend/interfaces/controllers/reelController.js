@@ -56,7 +56,6 @@ exports.getRecent = async (req, res) => {
         }
 
         const result = await getRecentReels.execute({ limit:limitNum, userId, tag, cursor });
-
         res.status(200).json({success:true,message:"Recent Reels",...result})
     } catch (err) {
         console.error(err);

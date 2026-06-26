@@ -58,7 +58,7 @@ class EditUser {
             if (data.newPassword && data.confirmPassword) {
 
                 if (data.newPassword !== data.confirmPassword) {
-                    return new Error("Password not matched")
+                    throw new Error("Password not matched")
                 }
 
                 const hashedPassword = await bcrypt.hash(data.newPassword, 10);

@@ -62,7 +62,6 @@ mongodbConfig.connectDB()
 
 app.use('/auth', authRoute)
 
-app.use(verifyAuth)
 
 app.use('/user', userRoute)
 app.use('/community', communityRoute)

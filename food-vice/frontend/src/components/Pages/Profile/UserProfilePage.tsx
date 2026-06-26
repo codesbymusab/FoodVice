@@ -1,18 +1,13 @@
 import { useEffect, useState } from "react";
-import { ReelCard } from "../Home/Cards/ReelCard";
 import { AchievementBadge, AchievementBadgeAlt } from "./Components/AchievementBadge";
-import { PostedReview } from "./Components/PostedReview";
 import { SavedRestaurant } from "./Components/SavedRestaurant";
 import { useParams } from "react-router";
 import { EditProfilePage } from "./EditProfilePage";
-import { fetchUserProfile as loadUserProfileData, fetchSavedRestaurants, fetchUserReels, fetchUserReviews } from "../../../apis/profile";
+import { fetchUserProfile as loadUserProfileData, fetchSavedRestaurants} from "../../../apis/profile";
 import type { Restaurant } from "../RestaurantDetail/RestaurantDetailPage";
-
 import { useAuth } from "../../../context/AuthContext";
 import { LoadingDialog } from "../../Shared/Feedback";
 import type { Review } from "../../../apis/reviews";
-import type { cursorPagination } from "../../../apis/restaurants";
-import type { Reel } from "../../../apis/reels";
 import { UserReels } from "./Sections/UserReels";
 import { UserReviews } from "./Sections/UserReviews";
 
@@ -42,7 +37,6 @@ export function UserProfilePage() {
     const params = useParams()
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
     const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
-    const [reviews, setReviews] = useState<Review[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [showEditForm, setShowEditForm] = useState<boolean>(false);
     const [selectedTab, setSelectedTab] = useState<SelectedTab>('restaurants')
@@ -224,7 +218,7 @@ export function UserProfilePage() {
 
                     {
                         restaurants && restaurants.slice(0, 2).map((restaurant) => {
-                            return <SavedRestaurant restaurant={restaurant} />
+                            return <SavedRestaurant key={restaurant.restaurant._id} restaurant={restaurant} />
                         })
                     }
 

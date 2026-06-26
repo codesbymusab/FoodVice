@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node ./tests/moderation.test.js",
+    "test": "vitest",
     "migrate-moderation": "node ./scripts/migrate-moderation.js"
   },
   "keywords": [],
@@ -29,6 +29,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@types/google.maps": "^3.64.0"
+    "@types/google.maps": "^3.64.0",
+    "vitest": "^4.1.9"
   }
 }

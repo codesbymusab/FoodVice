@@ -8,7 +8,8 @@ class GetRecentReels {
 
   async execute({ cursor, limit, userId, tag = null }) {
 
-    if (!userId) return new Error('UserId required')
+    if (!userId) throw new Error('UserId required')
+
     let limitCap = limit
 
     if (limit && limit > 100) {

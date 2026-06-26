@@ -11,7 +11,7 @@ class GoogleSignIn {
         const userData = await this.oAuthRepo.verifyToken(data.access_token)
 
         if (!userData) {
-            return new Error('User not found')
+            throw new Error('User not found')
         }
 
         let user = await this.userRepo.getByEmail(userData.email)

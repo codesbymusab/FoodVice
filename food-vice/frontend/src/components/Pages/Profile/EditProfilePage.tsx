@@ -100,8 +100,8 @@ export function EditProfilePage({ profile, setShowEditForm, fetchProfile }: { pr
             })
 
             if (form.newPassword) {
-                data.append("currentPassword", form.currentPassword)
                 data.append("newPassword", form.newPassword)
+                data.append("confirmPassword", form.confirmPassword)
             }
 
             if (imageFile) {

@@ -11,7 +11,7 @@ exports.validateRequest = (schema) => (req, res, next) => {
     }
     else {
     
-        return res.status(400).json({ success: false, message: 'Validation Failed', errors: result.error.flatten().fieldErrors })
+        return res.status(400).json({ success: false, message: 'Validation Failed', errors: result.error.flatten()})
     }
 
 }

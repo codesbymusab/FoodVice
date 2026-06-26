@@ -10,7 +10,7 @@ class GetFollowerReels {
   async execute({ userId, cursor, limit, tag = null }) {
 
 
-    if (!userId) return new Error('UserId required')
+    if (!userId) throw new Error('UserId required')
 
     let limitCap = limit
 
