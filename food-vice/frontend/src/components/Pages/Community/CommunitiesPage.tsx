@@ -35,7 +35,6 @@ export function CommunitiesPage() {
     const fetchRecommendedCommunities = async () => {
         try {
             const response = await axios.get(`${API_BASE}/community/recommended?userId=${user?.userId}`, { withCredentials: true })
-      
             setRecommendedCommunities(response.data)
         } catch (error) {
             console.error('Error fetching recommended communities:', error)
@@ -47,7 +46,7 @@ export function CommunitiesPage() {
 
             const topicIds = selectedTopic !== 'all' ? [selectedTopic] : []
             const fetchedThreads = await getAllThreads(searchQuery, topicIds)
-      
+            
             setRecommendedThreads(fetchedThreads)
 
         } catch (error) {
@@ -65,9 +64,9 @@ export function CommunitiesPage() {
 
 
     useEffect(() => {
-        Promise.all([fetchJoinedCommunities,
-        fetchRecommendedCommunities,
-        fetchRecommendedThreads])
+        fetchJoinedCommunities(),
+        fetchRecommendedCommunities(),
+        fetchRecommendedThreads()
     }, [])
 
     useEffect(() => {

@@ -7,7 +7,7 @@ const reelSchema = require("../validators/reel.validator");
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
 
-router.post("/upload",validateRequest(reelSchema),upload.single("file"), reelCntrl.upload)
+router.post("/upload",upload.single("file"),validateRequest(reelSchema),reelCntrl.upload)
 router.get('/:userId', reelCntrl.getUserReels)
 router.get('/reel/:reelId/:userId', reelCntrl.getById)
 router.get("/recent/reels", reelCntrl.getRecent);

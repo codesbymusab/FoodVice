@@ -7,6 +7,7 @@ export type Review = {
     restaurantId: string,
     name: string,
     user: {
+        _id: string,
         username: string,
         name: string,
         profilePhoto?: string,
@@ -106,6 +107,7 @@ export async function createReview(formData: FormData): Promise<boolean> {
         const res = await fetch(`${API_BASE}/reviews/create`, {
             method: "POST",
             body: formData,
+            credentials:"include"
         });
 
         if (!res.ok) {

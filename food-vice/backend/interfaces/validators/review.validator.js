@@ -1,5 +1,6 @@
 
-const z = require('zod')
+const z = require('zod');
+const fileSchema = require('./file.validator');
 
 
 const ratingSchema = z.object({
@@ -16,6 +17,7 @@ const reviewSchema = z.object({
     userId: z.string({error:"UserID is required"}),
     restaurantId: z.string({ error: 'RestaurantID is required' }),
     text: z.string({error:"Description is required"}),
+    files:z.array(fileSchema).optional(),
     rating: z
     .string({error:"No rating provided"})
     .transform((str) => {
@@ -25,7 +27,7 @@ const reviewSchema = z.object({
         throw new Error("Invalid JSON in rating field");
       }
     })
-    .pipe(ratingSchema) .transform((obj)=>{
+    .pipe(ratingSchema).transform((obj)=>{
         const overall=(obj.food+obj.ambience+obj.price+obj.service)/4
         return {...obj,overall}
     })

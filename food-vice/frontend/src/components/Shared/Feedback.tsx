@@ -30,6 +30,41 @@ export function OfflineScreen({ title = "No internet connection", subtitle = "Pl
   );
 }
 
+import { useState } from "react";
+
+export function ErrorModal({
+  title = "Something went wrong",
+  subtitle = "An unexpected error occurred. Please try again later.",
+}: {
+  title?: string;
+  subtitle?: string;
+}) {
+  const [visible, setVisible] = useState(true);
+
+  if (!visible) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 backdrop-blur-sm">
+      <div className="mt-10 w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-8 shadow-xl dark:border-slate-800 dark:bg-slate-900">
+        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-yellow-100 text-3xl text-yellow-600 dark:bg-yellow-900/20">
+          <span className="material-symbols-outlined">error</span>
+        </div>
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+          {title}
+        </h1>
+        <p className="mt-3 text-slate-600 dark:text-slate-400">{subtitle}</p>
+        <button
+          onClick={() => setVisible(false)}
+          className="mt-6 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-primary/20 transition hover:brightness-110"
+        >
+          Dismiss
+        </button>
+      </div>
+    </div>
+  );
+}
+
+
 export function ErrorScreen({
   title = "Something went wrong",
   message = "Unable to load this section. Please try again.",

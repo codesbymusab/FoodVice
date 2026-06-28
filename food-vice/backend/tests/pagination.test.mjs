@@ -383,7 +383,7 @@ describe('cursor pagination', async () => {
     })
     it('returns empty array for empty collection',async ()=>{
         const reels=await getReels.execute({userId:"69e1f767bf83c83874c9ddf8",limit:0})
-        expect(reels.data.length).toBe(0)
+        expect(reels.data).toHaveLength(0)
     })
     it('throws error for tampered cursor',async ()=>{
        

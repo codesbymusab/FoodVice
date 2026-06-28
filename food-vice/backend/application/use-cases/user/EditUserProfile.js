@@ -1,9 +1,9 @@
 const bcrypt = require('bcrypt')
 
 class EditUser {
-    constructor(userRepo,storageService) {
+    constructor(userRepo, storageService) {
         this.userRepo = userRepo;
-        this.storageService=storageService
+        this.storageService = storageService
     }
 
     async execute(data) {
@@ -32,6 +32,13 @@ class EditUser {
             throw new Error("User not found")
         }
 
+        if (data.file) {
+          
+            const url = await this.storageService.uploadFile(data.file, "profile");
+
+            data.profilePhoto = url
+        }
+
         if (data.provider === 'local') {
 
             if (!data.password) {
@@ -48,12 +55,7 @@ class EditUser {
             }
 
 
-            if (data.file) {
 
-                const url = await this.storageService.uploadFile(data.file, "profile");
-
-                data.profilePhoto=url
-            }
 
             if (data.newPassword && data.confirmPassword) {
 

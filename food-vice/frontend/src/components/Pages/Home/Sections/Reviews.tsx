@@ -70,7 +70,7 @@ export function Reviews() {
 
             </div>
             {reviewsPagination?.hasMore && <div className='mt-4 flex items-center justify-center'>
-                <button className="px-4 py-3  mb-4 border-2 bg-white rounded-2xl border-primary text-primary font-bold text-sm hover:underline hover:scale-105" onClick={async () => loadReviews()}>
+                <button className="px-4 py-3  mb-2 border-2 bg-white rounded-2xl border-primary text-primary font-bold text-sm hover:underline hover:scale-105" onClick={async () => loadReviews()}>
                     View More
                 </button>
             </div>}

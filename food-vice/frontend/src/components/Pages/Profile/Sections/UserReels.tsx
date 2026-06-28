@@ -86,7 +86,7 @@ export function UserReels({ userId }: { userId: string }) {
                             })}
                         </div>
                         :
-                        <div>
+                        <div className="flex justify-center text-slate-600 items-center m-4">
                             No reels saved yet...
                         </div>
                     }

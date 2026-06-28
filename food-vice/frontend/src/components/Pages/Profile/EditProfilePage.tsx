@@ -82,7 +82,7 @@ export function EditProfilePage({ profile, setShowEditForm, fetchProfile }: { pr
 
             const finalData = {
                 name: form.name || profile.name,
-                username: form.username ? `@${form.username}` : profile.username,
+                username: form.username ? form.username : profile.username,
                 email: form.email || profile.email,
                 bio: form.bio || profile.bio || "",
                 address:
@@ -111,6 +111,7 @@ export function EditProfilePage({ profile, setShowEditForm, fetchProfile }: { pr
 
             await editUserProfile(data)
             setShowEditForm(false)
+            window.location.reload();
             await fetchProfile()
         } catch (err) {
             console.error(err)
@@ -238,7 +239,7 @@ export function EditProfilePage({ profile, setShowEditForm, fetchProfile }: { pr
                                                 {errors.username && <span className="text-red-600 ml-2">{errors.username}</span>}
                                             </label>
                                             <div className="relative">
-                                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400 font-bold">@</span>
+                                                {!form.username.startsWith('@') && <span className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400 font-bold">@</span>}
                                                 <input 
                                                     name="username" 
                                                     value={form.username} 
@@ -274,36 +275,41 @@ export function EditProfilePage({ profile, setShowEditForm, fetchProfile }: { pr
 
                             <div className="bg-white p-8 rounded-2xl shadow-xl shadow-stone-200/50">
                                 <h2 className="text-2xl font-black mb-6 flex items-center gap-2">02 Security Settings</h2>
+                                {profile.provider ==='google' ?  
+                                <div className="flex justify-center items-center px-4 text-lg font-bold text-slate-600">Linked with Google</div> :
+                                <>
+                                    <input 
+                                        name="currentPassword" 
+                                        value={form.currentPassword} 
+                                        onChange={handleChange} 
+                                        type="password"
+                                        className="w-full mb-4 px-4 py-3 bg-gray-100 rounded-xl border-2 border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary transition-all" 
+                                        placeholder="Current Password"
+                                        disabled={isSubmitting}
+                                    />
 
-                                <input 
-                                    name="currentPassword" 
-                                    value={form.currentPassword} 
-                                    onChange={handleChange} 
-                                    type="password"
-                                    className="w-full mb-4 px-4 py-3 bg-gray-100 rounded-xl border-2 border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary transition-all" 
-                                    placeholder="Current Password"
-                                    disabled={isSubmitting}
-                                />
+                                    <input 
+                                        name="newPassword" 
+                                        value={form.newPassword} 
+                                        onChange={handleChange} 
+                                        type="password"
+                                        className="w-full mb-4 px-4 py-3 bg-gray-100 rounded-xl border-2 border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary transition-all" 
+                                        placeholder="New Password"
+                                        disabled={isSubmitting}
+                                    />
 
-                                <input 
-                                    name="newPassword" 
-                                    value={form.newPassword} 
-                                    onChange={handleChange} 
-                                    type="password"
-                                    className="w-full mb-4 px-4 py-3 bg-gray-100 rounded-xl border-2 border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary transition-all" 
-                                    placeholder="New Password"
-                                    disabled={isSubmitting}
-                                />
-
-                                <input 
-                                    name="confirmPassword" 
-                                    value={form.confirmPassword} 
-                                    onChange={handleChange} 
-                                    type="password"
-                                    className="w-full px-4 py-3 bg-gray-100 rounded-xl border-2 border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary transition-all" 
-                                    placeholder="Confirm Password"
-                                    disabled={isSubmitting}
-                                />
+                                    <input 
+                                        name="confirmPassword" 
+                                        value={form.confirmPassword} 
+                                        onChange={handleChange} 
+                                        type="password"
+                                        className="w-full px-4 py-3 bg-gray-100 rounded-xl border-2 border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary transition-all" 
+                                        placeholder="Confirm Password"
+                                        disabled={isSubmitting}
+                                    />
+                                </>
+                               
+                                }
                             </div>
 
                             <div className="bg-white p-8 rounded-2xl shadow-xl shadow-stone-200/50">

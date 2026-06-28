@@ -8,7 +8,7 @@ const communitySchema = require('../validators/community.validator');
 
 const upload = multer({ storage: multer.memoryStorage() });
 
-router.post('/',validateRequest(communitySchema),upload.single('coverPhoto'), communityController.createCommunity);
+router.post('/',upload.single('coverPhoto'),validateRequest(communitySchema),communityController.createCommunity);
 router.get('/',communityController.getCommunities);
 router.get('/joined',communityController.getJoinedCommunities);
 router.get('/recommended',communityController.getRecommendedCommunities);

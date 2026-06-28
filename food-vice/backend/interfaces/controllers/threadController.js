@@ -12,6 +12,8 @@ exports.createThread = async (req, res) => {
 
     const { communityId, title, content, topics } = req.body;
     
+
+
     let mediaIds = [];
     
     // Handle media uploads
@@ -34,7 +36,7 @@ exports.createThread = async (req, res) => {
       communityId,
       title,
       content,
-      topics: topics ? JSON.parse(topics) : [],
+      topics: topics ?? [],
       media: mediaIds 
     };
 

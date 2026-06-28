@@ -44,13 +44,19 @@ export function ReelsPage() {
             }, 1000)
             formData.append("userId", user!.userId)
 
-            await uploadReelApi({ formData, userId: user!.userId });
+            await uploadReelApi({ formData});
             setShowUploadForm(false)
-        } catch (err) {
-            console.error("Error uploading reel:", err);
-            setError("Failed to upload reel");
-        } finally {
+            setLoading(true)
+            await fetchReels()
+            
+            
+        }catch(error){
+            console.error(error)
+            setError('Upload Failed')
+        }
+        finally {
             setUploading(false)
+            setLoading(false)
         }
     }
 
@@ -61,6 +67,7 @@ export function ReelsPage() {
         } catch (error) {
             console.error(error);
             setError("Unable to load popular tags right now.");
+            
         }
     }
 
@@ -231,6 +238,7 @@ export function ReelsPage() {
             </main>
         )
     }
+
 
     if (error && !reels) {
         return (

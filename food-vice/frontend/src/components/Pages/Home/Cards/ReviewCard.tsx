@@ -7,7 +7,7 @@ import { toggleLikeReview as toggleLikeReviewApi, type Review } from "../../../.
 export function ReviewCard({ review, setReviews }: { review: Review, setReviews: Dispatch<SetStateAction<Review[]>> }) {
 
     const navigate = useNavigate()
-    const { user } = useAuth()
+    
 
     async function toggleLikeReview(
         userId: string,
@@ -47,7 +47,7 @@ export function ReviewCard({ review, setReviews }: { review: Review, setReviews:
                         <img className="w-full h-full object-cover" src={review.user.profilePhoto} />
                     </div>
                     <div >
-                        <h6 className="font-bold text-sm hover:text-accent-cyan cursor-pointer" onClick={() => navigate(`/profile/${user?.userId}`)}>{review.user.name}</h6>
+                        <h6 className="font-bold text-sm hover:text-accent-cyan cursor-pointer" onClick={() => navigate(`/profile/${review.user._id}`)}>{review.user.name}</h6>
                         <p className="text-xs text-slate-500" onClick={() => navigate(`/explore/restaurant/${review.restaurantId}`)}>reviewed <span className="text-primary font-bold cursor-pointer hover:underline">{review.restaurant && review.restaurant.name}</span></p>
                     </div>
                 </div>

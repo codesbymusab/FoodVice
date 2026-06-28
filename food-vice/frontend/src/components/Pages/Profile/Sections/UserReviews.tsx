@@ -57,6 +57,10 @@ export function UserReviews({ userId }: { userId: string }) {
     }
 
     return (
+        <div>
+
+        {
+        reviews.length > 0 ?
         <div className="space-y-8">{
             reviews.map(review => {
                 return (
@@ -106,15 +110,23 @@ export function UserReviews({ userId }: { userId: string }) {
 
             })}
 
-            <div className="mt-8 text-center">
+            {reviewsPagination?.cursor && <div className="mt-8 text-center">
                 <button className="px-6 py-2 border border-primary text-primary font-bold rounded-lg hover:bg-primary/5 transition-colors" onClick={()=>loadReviews()}>
                     Load More
                 </button>
             </div>
+            }
 
 
 
-
+        
         </div>
+        :
+        <div className="flex justify-center items-center text-slate-600 m-4">
+            You have not written any reviews yet...
+        </div>    
+    }
+
+    </div>
     )
 }

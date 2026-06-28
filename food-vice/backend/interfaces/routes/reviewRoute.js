@@ -10,5 +10,5 @@ const upload = multer({ storage });
 router.get('/recent',reviewCntrl.recentReviews)
 router.get('/:restaurantId',reviewCntrl.restReviews)
 router.get('/user/:userId/',reviewCntrl.userReviews)
-router.post("/create",validateRequest(reviewSchema),upload.array("files"), reviewCntrl.createReview);
+router.post("/create",upload.array("files"),validateRequest(reviewSchema),reviewCntrl.createReview);
 module.exports=router

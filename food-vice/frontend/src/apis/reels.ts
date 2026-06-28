@@ -156,11 +156,10 @@ export async function toggleCommentLike({ commentId, userId }: { commentId: stri
 
 
 
-export async function uploadReel({ formData, userId }: { formData: FormData, userId: string }): Promise<void> {
+export async function uploadReel({ formData}: { formData: FormData }): Promise<void> {
     try {
-
-        formData.append("userId", userId)
-
+        
+        
         const response = await fetch(`${API_BASE}/reels/upload`, {
             method: "POST",
             body: formData,

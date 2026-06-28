@@ -1,4 +1,5 @@
 const z = require('zod')
+const fileSchema = require('./file.validator')
 
 
 const profileSchema =  z.object({
@@ -11,21 +12,15 @@ const profileSchema =  z.object({
     country: z.string({ error: "Country is required" }),
     city: z.string({ error: "City is required" }),
     provider: z.enum(["google", "local"], { error: "Incorrect provider" }),
-    confirmPassword: z.never(),
-    profilePhoto: z.file({ error: "Incorrect file format" }).optional(),
-    password: z.string({ error: "Current Password not provided " }),
+    file: fileSchema.optional(),
+    password: z.string({ error: "Password not valid" }).optional(),
     newPassword: z.string()
         .min(8, 'Password must be at least 8 characters')
         .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
         .regex(/[0-9]/, 'Password must contain at least one number')
         .regex(/[!@#$%^&*()_+/~\-]/, 'Password must contain at least one special character').optional(),
     confirmPassword: z.string().optional(),
-}).refine((data) => {
-    if (data.newPassword && data.newPassword !== data.confirmPassword) {
-        return { message: "Passwords don't match" }
-    }
-}
-)
+})
 
 
 module.exports = profileSchema

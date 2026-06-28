@@ -39,7 +39,7 @@ export const validateName = (name: string): string | null => {
 export const validateUsername = (username: string): string | null => {
   if (!username) return "Username is required";
   if (username.trim().length < 3) return "Username must be at least 3 characters";
-  if (!/^[a-zA-Z0-9_-]+$/.test(username)) return "Username can only contain letters, numbers, hyphens, and underscores";
+  if (!/^[a-zA-Z0-9_-_@]+$/.test(username)) return "Username can only contain letters, numbers, hyphens, and underscores";
   return null;
 };
 

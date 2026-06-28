@@ -14,10 +14,7 @@ class UploadReel {
         if (!file) throw new Error("File required");
         if (!title) throw new Error('Title required')
         if (!description) throw new Error('Description is required')
-
-        
        
-
         const url = await this.storageService.uploadFile(file, "reels");
 
         const reel = await this.reelRepo.createReel({

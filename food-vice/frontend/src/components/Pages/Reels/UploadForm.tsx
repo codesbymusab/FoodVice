@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { validateReelUploadForm, hasErrors } from "../../../utils/validators";
-import { ConfirmationDialog, OperationLoadingDialog } from "../../Shared/Feedback";
+import { ConfirmationDialog, ErrorScreen, OperationLoadingDialog } from "../../Shared/Feedback";
 
 export function UploadReelForm({ onSubmit, setShowReelForm }: {
   onSubmit: (formData: FormData) => void,
@@ -46,10 +46,11 @@ export function UploadReelForm({ onSubmit, setShowReelForm }: {
     try {
       onSubmit(formData);
     } catch (err) {
-      console.error(err)
+     
       setErrors({
         submit: err instanceof Error ? err.message : "Failed to upload reel. Please try again."
       })
+      
     } finally {
       setIsSubmitting(false)
     }
@@ -68,6 +69,9 @@ export function UploadReelForm({ onSubmit, setShowReelForm }: {
     }
   };
 
+  if(errors.submit){
+    return <ErrorScreen title="Upload Failed" message={errors.submit} onRetry={confirmSubmit}/>
+  }
   return (
     <>
       {showConfirmation && (

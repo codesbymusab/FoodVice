@@ -10,11 +10,7 @@ src/
 │   ├── valueObjects/       # optional (Rating, Location etc.)
 │   │   ├── Rating.js
 │   │   └── Location.js
-│   │
-│   └── services/           # business logic
-│       ├── RecommendationService.js
-│       └── ReputationService.js
-│
+│   
 │
 ├── application/            # 🟡 USE CASES
 │   ├── use-cases/
