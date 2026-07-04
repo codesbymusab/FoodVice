@@ -140,10 +140,9 @@ export async function postComment({ reelId, userId, newComment }: { reelId: stri
 
 export async function toggleCommentLike({ commentId, userId }: { commentId: string, userId: string }): Promise<void> {
     try {
-        const res = await fetch(`${API_BASE}/like/reel/comment`, {
+        const res = await fetch(`${API_BASE}/like/reel/comment/${commentId}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ commentId, userId: userId }),
             credentials: "include"
         });
         if (!res.ok) throw new Error("Failed to toggle comment like");
@@ -280,10 +279,10 @@ export async function toggleLikeReel({ userId, reelId }: {
 
     try {
        
-        const res = await fetch(`${API_BASE}/like/reel`, {
+        const res = await fetch(`${API_BASE}/like/reel/${reelId}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId: userId, reelId: reelId }),
+           
             credentials: "include",
         });
       

@@ -4,11 +4,12 @@ import { SavedRestaurant } from "./Components/SavedRestaurant";
 import { useParams } from "react-router";
 import { EditProfilePage } from "./EditProfilePage";
 import { fetchUserProfile as loadUserProfileData, fetchSavedRestaurants} from "../../../apis/profile";
-import type { Restaurant } from "../RestaurantDetail/RestaurantDetailPage";
+
 import { useAuth } from "../../../context/AuthContext";
 import { LoadingDialog } from "../../Shared/Feedback";
 import { UserReels } from "./Sections/UserReels";
 import { UserReviews } from "./Sections/UserReviews";
+import type { Restaurant } from "../../../apis/admin";
 
 
 export type UserProfile = {

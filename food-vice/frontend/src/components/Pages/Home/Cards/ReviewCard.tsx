@@ -7,7 +7,7 @@ import { toggleLikeReview as toggleLikeReviewApi, type Review } from "../../../.
 export function ReviewCard({ review, setReviews }: { review: Review, setReviews: Dispatch<SetStateAction<Review[]>> }) {
 
     const navigate = useNavigate()
-    
+    const {user}=useAuth()
 
     async function toggleLikeReview(
         userId: string,
