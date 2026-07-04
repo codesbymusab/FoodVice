@@ -38,10 +38,10 @@ export async function toggleLikeReview(
 
 
     try {
-        const res = await fetch(`${API_BASE}/like/review`, {
+        const res = await fetch(`${API_BASE}/like/review/${reviewId}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId: userId, reviewId: reviewId }),
+           
             credentials: "include",
         });
 
