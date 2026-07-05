@@ -31,7 +31,7 @@ export const userReelQuerySchema = z.object({
             return cur
         }
     }
-    ).pipe(z.object({}, { error: 'Invalid Cursor' })).optional(),
+    ).pipe(z.object({ createdAt: z.number() }, { error: 'Invalid Cursor' })).optional(),
 })
 
 export type UserReelsQueryParams = z.infer<typeof userReelQuerySchema>

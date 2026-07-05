@@ -2,6 +2,9 @@ import { Request, Response } from 'express'
 import SignupUser from '../../application/use-cases/user/SignupUser'
 import LoginUser from '../../application/use-cases/user/LoginUser'
 import GoogleSignIn from '../../application/use-cases/user/GoogleSignIn'
+import { RegisterDTO } from '../../application/dtos/input/Auth/RegisterDTO'
+import { LoginDTO } from '../../application/dtos/input/Auth/LoginDTO'
+import { GoogleLoginDTO } from '../../application/dtos/input/Auth/GoogleLoginDTO'
 
 export default class AuthController {
     constructor(
@@ -21,7 +24,7 @@ export default class AuthController {
         try {
 
 
-            const user = await this.signup.execute(req.validatedBody)
+            const user = await this.signup.execute(req.validatedBody as RegisterDTO)
 
             if (user) {
                 return res.status(201).json({ message: 'User created Successfully', user: user })
@@ -44,7 +47,7 @@ export default class AuthController {
         try {
 
 
-            const { user, token } = await this.login.execute(req.validatedBody)
+            const { user, token } = await this.login.execute(req.validatedBody as LoginDTO)
             const isProd = process.env.ENVIRONMENT === 'Production';
 
 
@@ -71,7 +74,7 @@ export default class AuthController {
 
 
 
-            const { user, token } = await this.google.execute(req.validatedBody)
+            const { user, token } = await this.google.execute(req.validatedBody as GoogleLoginDTO)
             const isProd = process.env.ENVIRONMENT === 'Production';
 
 

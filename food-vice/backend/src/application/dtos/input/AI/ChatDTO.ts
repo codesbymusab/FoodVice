@@ -3,7 +3,7 @@ import { z } from 'zod'
 export const aiChatSchema = z.object({
   
   limitCount: z.coerce.number().int().min(1).max(10).optional().default(5),
-  messages:z.string(),
+  messages:z.array(z.string()).default([]),
   location:z.object({
     lat:z.coerce.number(),
     lon:z.coerce.number(),

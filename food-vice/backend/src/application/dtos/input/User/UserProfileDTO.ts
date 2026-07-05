@@ -20,6 +20,7 @@ const userProfileSchema = z.object({
         .regex(/[0-9]/, 'Password must contain at least one number')
         .regex(/[!@#$%^&*()_+/~\-]/, 'Password must contain at least one special character').optional(),
     confirmPassword: z.string().optional(),
+    profilePhoto:z.string()
 })
 
 export type UserProfileDTO = z.infer<typeof userProfileSchema>

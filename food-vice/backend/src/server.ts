@@ -44,7 +44,6 @@ import AuditLogRepoImpl from './infrastructure/database/mongodb/repositories/Aud
 import AuthServiceImpl from './infrastructure/services/JWT/AuthServiceImp'
 import OAuthServiceImpl from './infrastructure/services/OAuth/AuthServicesImp'
 import GroqService from './infrastructure/services/GroqAI/AIServiceImpl'
-import AuditService from './infrastructure/services/AuditService'
 import GetUser from './application/use-cases/user/GetUser'
 import GetUserProfile from './application/use-cases/user/GetUserProfile'
 import EditUserProfile from './application/use-cases/user/EditUserProfile'
@@ -82,6 +81,13 @@ import GetSimilarRestaurants from './application/use-cases/restaurants/GetSimila
 import GetTopRatedyRestaurants from './application/use-cases/restaurants/GetTopRatedRest'
 import GetTrendingRestaurants from './application/use-cases/restaurants/GetTrendingRestaurants'
 import GetSavedRestaurants from './application/use-cases/saves/GetSavedRestaurants'
+import GetRestaurants from './application/use-cases/admin/GetRestaurants'
+import CreateRestaurant from './application/use-cases/admin/CreateRestaurant'
+import UpdateRestaurant from './application/use-cases/admin/UpdateRestaurant'
+import DeleteRestaurant from './application/use-cases/admin/DeleteRestaurant'
+import GetUsers from './application/use-cases/admin/GetUsers'
+import SetUserRole from './application/use-cases/admin/SetUserRole'
+import GetAuditLogs from './application/use-cases/admin/GetAuditLogs'
 import createRestaurantRouter from './interfaces/routes/restaurantRoute'
 import LikeController from './interfaces/controllers/likeController'
 import createLikeRouter from './interfaces/routes/likeRoute'
@@ -89,6 +95,8 @@ import LikeReel from './application/use-cases/reels/LikeReel'
 import LikeReelComment from './application/use-cases/reels/LikeReelComment'
 import LikeReview from './application/use-cases/reviews/LikeReview'
 import LikeRepoImpl from './infrastructure/database/mongodb/repositories/LikeRepoImpl'
+import { logRequest } from './interfaces/middlewares/validationMiddleware'
+import AuditService from './infrastructure/services/Audit/AuditServiceImpl'
 const cookieParser=  require('cookie-parser')
 
 
@@ -242,11 +250,22 @@ const moderationController = new ModerationController(
 
 // Admin
 
+const getRestaurantsUseCase = new GetRestaurants(restRepo)
+const createRestaurantUseCase = new CreateRestaurant(restRepo, auditService)
+const updateRestaurantUseCase = new UpdateRestaurant(restRepo, auditService)
+const deleteRestaurantUseCase = new DeleteRestaurant(restRepo, auditService)
+const getUsersUseCase = new GetUsers(userRepo)
+const setUserRoleUseCase = new SetUserRole(userRepo, auditService)
+const getAuditLogsUseCase = new GetAuditLogs(auditLogRepo)
+
 const adminController = new AdminController(
-  new RestaurantRepoImpl(),
-  userRepo,
-  auditService,
-  auditLogRepo
+  getRestaurantsUseCase,
+  createRestaurantUseCase,
+  updateRestaurantUseCase,
+  deleteRestaurantUseCase,
+  getUsersUseCase,
+  setUserRoleUseCase,
+  getAuditLogsUseCase
 )
 
 // AI
@@ -310,7 +329,7 @@ app.listen(3000, () => { console.log('Server Started') })
 
 mongodbConfig.connectDB()
 
-
+app.use(logRequest)
  
 
 app.use('/auth', authRouter)

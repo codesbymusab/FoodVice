@@ -5,27 +5,27 @@ import { Request, Response } from 'express'
 import GetRecommendedRestaurants from '../../application/use-cases/restaurants/GetRecommendedRest'
 import GetTopRatedyRestaurants from '../../application/use-cases/restaurants/GetTopRatedRest'
 import GetNearbyyRestaurants from '../../application/use-cases/restaurants/GetNearbyRest'
-import GetRestaurantDetails from '../../application/use-cases/restaurants/GetRestaurantDetails'
 import GetSimilarRestaurants from '../../application/use-cases/restaurants/GetSimilarRest'
 import GetCusines from '../../application/use-cases/restaurants/GetCuisines'
 import GetRestaurantPhotos from '../../application/use-cases/restaurants/GetRestaurantPhotos'
 import GetSavedRestaurants from '../../application/use-cases/saves/GetSavedRestaurants'
 import GetTrendingRestaurants from '../../application/use-cases/restaurants/GetTrendingRestaurants'
-import { PostViewParams, RestDetailsQueryParams, RestListQueryParams } from '../../application/dtos/input/Restaurant/RestaurantQueryParams'
+import { PostViewParams, restCuisinesParams, RestDetailsQueryParams, RestListQueryParams } from '../../application/dtos/input/Restaurant/RestaurantQueryParams'
+import  GetRestaurantDetails  from '../../application/use-cases/restaurants/GetRestaurantDetails'
 
 export default class RestaurantController {
 
     constructor(
-        private getRecomRest:GetRecommendedRestaurants,
-        private getTopRest:GetTopRatedyRestaurants,
-        private getNearRest:GetNearbyyRestaurants,
-        private getRestDetails:GetRestaurantDetails,
-        private getSimRest:GetSimilarRestaurants,
-        private getCuis:GetCusines,
-        private getPhotos:GetRestaurantPhotos,
-        private getSavedRest:GetSavedRestaurants,
-        private getTrendRest:GetTrendingRestaurants,
-        
+        private getRecomRest: GetRecommendedRestaurants,
+        private getTopRest: GetTopRatedyRestaurants,
+        private getNearRest: GetNearbyyRestaurants,
+        private getRestDetails: GetRestaurantDetails,
+        private getSimRest: GetSimilarRestaurants,
+        private getCuis: GetCusines,
+        private getPhotos: GetRestaurantPhotos,
+        private getSavedRest: GetSavedRestaurants,
+        private getTrendRest: GetTrendingRestaurants,
+
 
     ) {
         this.recommendedRest = this.recommendedRest.bind(this)
@@ -43,23 +43,14 @@ export default class RestaurantController {
     async recommendedRest(req: Request, res: Response) {
 
         try {
-            
- 
-            const { lat, lon, cuisine, price, rating, dist,cursor, limit } = req.validatedQuery as RestListQueryParams
 
-            const location=[lon,lat]
-            
-            const filters = {
 
-                cuisine: cuisine ,
-                price: price ,
-                rating: rating,
-                distance: dist,
-            };
 
-            const userId=(req as any).userId
-           
-            const result = await this.getRecomRest.execute({ location, filters, userId, cursor, limit })
+
+
+            const userId = req.userId as string
+
+            const result = await this.getRecomRest.execute(userId, req.validatedQuery as RestListQueryParams)
 
             if (result) {
                 return res.status(200).json({ success: true, message: 'Recommended Restaurants', ...result });
@@ -79,23 +70,12 @@ export default class RestaurantController {
     async topRatedRest(req: Request, res: Response) {
 
         try {
-            
-            const { lat, lon, cuisine, price, rating, dist, cursor, limit } = req.validatedQuery as RestListQueryParams
 
-            const location=[lon,lat]
-            
-            const filters = {
 
-                cuisine: cuisine ,
-                price: price ,
-                rating: rating,
-                distance: dist,
-            };
 
-            
-            const userId=(req as any).userId
-           
-            const result = await this.getTopRest.execute({ location, filters, userId, cursor, limit })
+            const userId = req.userId as string
+
+            const result = await this.getTopRest.execute(userId, req.validatedQuery as RestListQueryParams)
 
             if (result) {
                 return res.status(200).json({ success: true, message: 'Top Rated Restaurants', ...result });
@@ -117,21 +97,11 @@ export default class RestaurantController {
 
         try {
 
-            const { lat, lon, cuisine, price, rating, dist, cursor, limit } = req.validatedQuery as RestListQueryParams
 
-            const location=[lon,lat]
-            
-            const filters = {
 
-                cuisine: cuisine ,
-                price: price ,
-                rating: rating,
-                distance: dist,
-            };
-            
-            const userId=(req as any).userId
-           
-            const result = await this.getNearRest.execute({ location: location, filters: filters, userId: userId })
+            const userId = req.userId as string
+
+            const result = await this.getNearRest.execute(userId, req.validatedQuery as RestListQueryParams)
 
             if (result) {
                 return res.status(200).json({ details: result });
@@ -155,15 +125,11 @@ export default class RestaurantController {
 
         try {
 
-            const restId = req.params.id
-            const { lat, lon } = req.validatedQuery as RestDetailsQueryParams
+            const restId = req.params.id as string
+            const userId = req.userId as string
 
-           
-            const location=[lon,lat]
-            
-            const userId=(req as any).userId
-           
-            const restDetails = await this.getRestDetails.execute({ id: restId, location: location, userId })
+
+            const restDetails = await this.getRestDetails.execute(userId, restId, req.validatedQuery as RestDetailsQueryParams)
 
             if (restDetails) {
                 return res.status(200).json({ details: restDetails });
@@ -186,11 +152,9 @@ export default class RestaurantController {
 
         try {
 
-            const restId = req.params.id
-            const { lat, lon } = req.validatedQuery as RestListQueryParams
-            const location=[lon,lat]
+            const restId = req.params.id as string
 
-            const result = await this.getSimRest.execute({ id: restId, location: location })
+            const result = await this.getSimRest.execute(restId, req.validatedQuery as RestListQueryParams)
 
             if (result) {
                 return res.status(200).json({ details: result });
@@ -213,8 +177,8 @@ export default class RestaurantController {
     async restCuisines(req: Request, res: Response) {
         try {
 
-            
-            const result = await this.getCuis.execute()
+            const {restId} = req.validatedQuery as restCuisinesParams
+            const result = await this.getCuis.execute({restId})
 
             if (result) {
                 return res.status(200).json({ result });
@@ -233,7 +197,7 @@ export default class RestaurantController {
     async restPhotos(req: Request, res: Response) {
         try {
 
-            const restId = req.params.id
+            const restId = req.params.id as string
             const photos = await this.getPhotos.execute({ restId: restId })
 
             if (photos) {
@@ -252,8 +216,8 @@ export default class RestaurantController {
 
     async savedRestaurants(req: Request, res: Response) {
         try {
-            const userId  = req.userId
-            
+            const userId = req.userId as string
+
             const result = await this.getSavedRest.execute({ userId });
             res.json(result);
         } catch (err) {
@@ -266,16 +230,12 @@ export default class RestaurantController {
 
     async trendingRestaurants(req: Request, res: Response) {
         try {
-            const { lat, lon, dist, limit } = req.validatedQuery as RestListQueryParams
-            
-            const location=[lon,lat]
-            const userId=(req as any).userId
-            const data = await this.getTrendRest.execute({
+
+            const userId = req.userId as string
+            const data = await this.getTrendRest.execute(
                 userId,
-                limit: limit,
-                location,
-                maxDistance: dist
-            });
+                req.validatedQuery as RestListQueryParams
+            );
 
             return res.status(200).json({ details: data });
         } catch (err) {
@@ -289,7 +249,7 @@ export default class RestaurantController {
         try {
             const restaurantId = req.params.id;
             const { meta } = req.validatedBody as PostViewParams
-            const userId=(req as any).userId
+            const userId = (req as any).userId
             const view = new RestaurantViewModel({
                 restaurantId: new mongoose.Types.ObjectId(restaurantId),
                 uid: new mongoose.Types.ObjectId(userId),

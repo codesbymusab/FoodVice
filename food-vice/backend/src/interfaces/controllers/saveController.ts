@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
-import SaveRestaurant from '../../application/use-cases/saves/SaveRestaurant'
 import SaveReel from '../../application/use-cases/saves/SaveReel'
+import SaveRestaurant from '../../application/use-cases/saves/SaveRestaurant'
 
 
 export default class SaveController {
@@ -15,8 +15,8 @@ export default class SaveController {
   async saveRestaurant(req: Request, res: Response) {
     try {
 
-      const restId=req.params.restId
-      const userId=req.userId
+      const restId=req.params.restId as string
+      const userId=req.userId as string
       const result = await this.saveRestaurantUseCase.execute({restId,userId})
       
       if (result) {
@@ -32,8 +32,8 @@ export default class SaveController {
   async saveReel(req: Request, res: Response) {
     try {
 
-      const userId=req.userId
-      const reelId=req.params.reelId
+      const userId=req.userId as string
+      const reelId=req.params.reelId as string
       const result = await this.saveReelUseCase.execute({userId,reelId})
       
 

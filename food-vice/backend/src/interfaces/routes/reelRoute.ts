@@ -1,8 +1,8 @@
 import express from 'express'
 import multer from 'multer'
 import ReelController from '../controllers/reelController'
-import { validateQueryParams, validateRequest } from '../middlewares/validationMiddleware'
-import { popularTagsQuerySchema, reelQuerySchema, suggestedAccQuerySchema } from '../../application/dtos/input/Reel/ReelQueryParams'
+import { logRequest, validateQueryParams, validateRequest } from '../middlewares/validationMiddleware'
+import { popularTagsQuerySchema, reelQuerySchema, suggestedAccQuerySchema, userReelQuerySchema } from '../../application/dtos/input/Reel/ReelQueryParams'
 import reelSchema from '../validators/reel.validator'
 
 function createReelRouter(reelController: ReelController) {
@@ -11,7 +11,7 @@ function createReelRouter(reelController: ReelController) {
     const upload = multer({ storage: multer.memoryStorage() })
 
     router.post('/upload', upload.single('file'), validateRequest(reelSchema), reelController.upload)
-    router.get('/:userId', reelController.userReels)
+    router.get('/:userId',logRequest,validateQueryParams(userReelQuerySchema), reelController.userReels)
     router.get('/reel/:reelId/:userId', reelController.get)
     router.get('/recent/reels',validateQueryParams(reelQuerySchema), reelController.recent)
     router.get('/followers/reels',validateQueryParams(reelQuerySchema),reelController.followerReels)

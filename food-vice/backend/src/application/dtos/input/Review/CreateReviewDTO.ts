@@ -10,7 +10,7 @@ const ratingSchema = z.object({
 });
 
 const reviewSchema = z.object({
-    userId: z.string({error:"UserID is required"}),
+
     restaurantId: z.string({ error: 'RestaurantID is required' }),
     text: z.string({error:"Description is required"}),
     files:z.array(fileSchema).optional(),

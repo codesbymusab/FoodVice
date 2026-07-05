@@ -20,9 +20,10 @@ export default class LikeController {
 
         try {
 
-            
-            const userId=req.userId
-            const result = await this.likeRev.execute({userId,reviewId:req.params.reviewId})
+
+            const userId = req.userId as string
+            const reviewId = req.params.reviewId as string
+            const result = await this.likeRev.execute({ userId, reviewId })
 
             if (result) {
                 return res.status(200).json({ message: result });
@@ -43,10 +44,10 @@ export default class LikeController {
 
         try {
 
-            
-            const userId=req.userId
 
-            const result = await this.likeReel.execute({reelId:req.params.reelId,userId})
+            const userId = req.userId as string
+            const reelId =  req.params.reelId as string
+            const result = await this.likeReel.execute({ reelId, userId })
 
             if (result) {
                 return res.status(200).json({ message: result });
@@ -65,9 +66,10 @@ export default class LikeController {
 
     async reelComment(req: Request, res: Response) {
         try {
-            
-            const userId= req.userId
-            const result = await this.likeReelComment.execute({ commentId:req.params.commentId, userId });
+
+            const userId = req.userId as string
+            const commentId=  req.params.commentId as string
+            const result = await this.likeReelComment.execute({ commentId, userId });
             res.json(result);
         } catch (err) {
             console.error(err);

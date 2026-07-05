@@ -4,7 +4,7 @@ import GetRecentReviews from "../../application/use-cases/reviews/GetRecentRevie
 import GetRestaurantReviews from "../../application/use-cases/reviews/GetRestaurantReviews"
 import GetUserReviews from "../../application/use-cases/reviews/GetUserReviews"
 import ReviewRestaurant from "../../application/use-cases/reviews/ReviewRestaurant"
-import {Request,Response} from 'express'
+import { Request, Response } from 'express'
 export default class ReviewController {
 
     constructor(
@@ -21,14 +21,14 @@ export default class ReviewController {
     }
 
 
-    async restReviews(req:Request,res:Response) {
+    async restReviews(req: Request, res: Response) {
         try {
-            const restId = req.params.restaurantId
-            const { cursor, limit } = req.validatedQuery as ReviewQueryParams
+            const restId = req.params.restaurantId as string
+            const { cursor, limit, sortBy } = req.validatedQuery as ReviewQueryParams
 
-          
 
-            const result = await this.getRestaurantReviews.execute({ restId, cursor, limit})
+
+            const result = await this.getRestaurantReviews.execute(restId, { cursor, limit, sortBy })
 
             if (result) {
                 return res.status(200).json({ success: true, message: 'Restaurant reviews', ...result });
@@ -43,15 +43,15 @@ export default class ReviewController {
     }
 
 
-    async recentReviews(req:Request,res:Response) {
+    async recentReviews(req: Request, res: Response) {
         try {
 
 
-            const { cursor, limit } = req.validatedQuery as ReviewQueryParams
-            const userId=(req as any).userId
-           
+            const { cursor, limit, sortBy } = req.validatedQuery as ReviewQueryParams
+            const userId = (req as any).userId
 
-            const result = await this.getrecentReviews.execute({ userId, cursor, limit})
+
+            const result = await this.getrecentReviews.execute(userId, { cursor, limit, sortBy })
 
             if (result) {
                 return res.status(200).json({ success: true, message: 'Recent reviews', ...result });
@@ -67,13 +67,13 @@ export default class ReviewController {
     }
 
 
-    async userReviews(req:Request,res:Response) {
+    async userReviews(req: Request, res: Response) {
         try {
 
-            const userId = req.params.userId
-            const { cursor, limit } = req.validatedQuery as ReviewQueryParams
-            
-            const result = await this.getUserReviews.execute({ userId, cursor, limit})
+            const userId = req.params.userId as string
+            const { cursor, limit, sortBy } = req.validatedQuery as ReviewQueryParams
+
+            const result = await this.getUserReviews.execute(userId, { cursor, limit, sortBy })
 
             if (result) {
                 return res.status(200).json(result);
@@ -87,20 +87,20 @@ export default class ReviewController {
         }
     }
 
-    async createReview(req:Request,res:Response) {
+    async createReview(req: Request, res: Response) {
         try {
-            const { userId, restaurantId, text, rating } = req.validatedBody as ReviewDTO
-            const formattedRating = typeof req.validatedBody!.rating === "string" ? JSON.parse(req.validatedBody!.rating) : req.validatedBody!.rating;
+            const { restaurantId, text, rating, files } = req.validatedBody as ReviewDTO
 
-            const files = req.files;
+            const userId = req.userId!
 
-            const result = await this.reviewRestaurant.execute({
+            const result = await this.reviewRestaurant.execute(
                 userId,
-                restaurantId,
-                text,
-                rating: formattedRating,
-                files
-            });
+                {
+                    restaurantId,
+                    text,
+                    rating,
+                    files
+                });
 
             return res.status(201).json(result);
         } catch (err) {

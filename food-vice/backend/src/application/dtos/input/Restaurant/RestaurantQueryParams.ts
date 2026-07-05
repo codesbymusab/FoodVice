@@ -60,3 +60,11 @@ export const postViewQuerySchema = z.object({
 
 export type PostViewParams = z.infer<typeof postViewQuerySchema>
 
+export const restCuisinesQuerySchema = z.object({
+
+  restId: z.string().optional()
+
+})
+
+export type restCuisinesParams = z.infer<typeof restCuisinesQuerySchema>
+

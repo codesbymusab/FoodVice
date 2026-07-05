@@ -32,6 +32,9 @@ export const adminCreateRestaurantSchema = z.object({
   locationId: z.string().optional(),
 })
 
+export type AdminCreateRestDTO = z.infer<typeof adminCreateRestaurantSchema>
+
+
 export const adminUpdateRestaurantSchema = adminCreateRestaurantSchema.partial()
 
 export const adminSetUserRoleSchema = z.object({

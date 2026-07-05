@@ -1,4 +1,5 @@
-import { PopularTagsParams, SuggestedAccParams, UserReelsQueryParams } from "../../application/dtos/input/Reel/ReelQueryParams";
+import { PopularTagsParams, ReelQueryParams, SuggestedAccParams, UserReelsQueryParams } from "../../application/dtos/input/Reel/ReelQueryParams";
+import { UploadReelDTO } from "../../application/dtos/input/Reel/UploadReelDTO";
 import GetFollowerReels from "../../application/use-cases/reels/GetFollowerReels";
 import GetPopularTags from "../../application/use-cases/reels/GetPopularTags";
 import GetRecentReels from "../../application/use-cases/reels/GetRecentReels";
@@ -37,9 +38,8 @@ export default class ReelController {
 
     async upload(req: Request, res: Response) {
         try {
-            const file = req.file;
 
-            const media = await this.uploadReel.execute({ ...req.validatedBody, file });
+            const media = await this.uploadReel.execute(req.validatedBody as UploadReelDTO);
 
             return res.status(201).json(media);
         } catch (err) {
@@ -51,12 +51,10 @@ export default class ReelController {
 
     async recent(req: Request, res: Response) {
         try {
-            const limit = req.validatedQuery!.limit;
-            const tag = req.validatedQuery!.tag ?? 'All'
-            const cursor = req.validatedQuery!.cursor
-            const userId=req.userId
 
-            const result = await this.getRecentReels.execute({ limit, userId, tag, cursor });
+            const userId = req.userId as string
+
+            const result = await this.getRecentReels.execute(userId, req.validatedQuery as ReelQueryParams);
             res.status(200).json({ success: true, message: "Recent Reels", ...result })
         } catch (err) {
             console.error(err);
@@ -66,13 +64,10 @@ export default class ReelController {
 
     async followerReels(req: Request, res: Response) {
         try {
-            const limit = req.validatedQuery!.limit
-            const tag = req.validatedQuery!.tag ?? 'All'
-            const cursor = req.validatedQuery!.cursor
-            const userId=req.userId
 
+            const userId = req.userId as string
 
-            const result = await this.getFollowerReels.execute({ limit, userId, tag, cursor });
+            const result = await this.getFollowerReels.execute(userId, req.validatedQuery as ReelQueryParams);
             res.status(200).json({ success: true, message: "Follower Reels", ...result })
         } catch (err) {
             console.error(err);
@@ -82,7 +77,7 @@ export default class ReelController {
 
     async popularTags(req: Request, res: Response) {
         try {
-            const {limit} = req.validatedQuery as PopularTagsParams
+            const { limit } = req.validatedQuery as PopularTagsParams
 
             const tags = await this.getPopularTags.execute({ limit });
             res.json(tags);
@@ -110,12 +105,10 @@ export default class ReelController {
     async userReels(req: Request, res: Response) {
         try {
 
-            const userId = req.params.userId
-            const { userCursor, savedCursor, limit } = req.validatedQuery as UserReelsQueryParams
+            const userId = req.params.userId as string
 
-          
+            const result = await this.getUserReels.execute(userId, req.validatedQuery as UserReelsQueryParams);
 
-            const result = await this.getUserReels.execute({ limit, userId, savedCursor, userCursor });
             res.status(200).json({ success: true, message: "User Reels", ...result })
         } catch (err) {
             console.error(err);
@@ -125,8 +118,8 @@ export default class ReelController {
 
     async get(req: Request, res: Response) {
         try {
-            const reelId = req.params.reelId
-            const userId = req.params.userId
+            const reelId = req.params.reelId as string
+            const userId = req.params.userId as string
 
 
             const reel = await this.getReel.execute({ reelId, userId });
@@ -142,7 +135,7 @@ export default class ReelController {
     async suggestAcc(req: Request, res: Response) {
         try {
             const { limit } = req.validatedQuery as SuggestedAccParams
-            const userId=(req as any).userId
+            const userId = (req as any).userId
 
             const suggestions = await this.suggAcc.execute(userId);
 

@@ -4,6 +4,7 @@ import FollowUser from '../../application/use-cases/user/FollowUser'
 import GetUser from '../../application/use-cases/user/GetUser'
 import GetUserProfile from '../../application/use-cases/user/GetUserProfile'
 import { FollowUserDTO } from '../../application/dtos/input/User/FollowUserDTO'
+import { UserProfileDTO } from '../../application/dtos/input/User/UserProfileDTO'
 
 export default class UserController {
   constructor(
@@ -38,10 +39,11 @@ export default class UserController {
 
   getUserProfile = async (req: Request, res: Response) => {
     try {
-      const profile = await this.getUserProfileUseCase.execute({ userId: req.params.userId })
+      const userId=req.params.userId as string
+      const profile = await this.getUserProfileUseCase.execute({ userId })
 
-      if (profile?.[0]) {
-        return res.status(200).json(profile[0])
+      if ((profile as any)?.[0]) {
+        return res.status(200).json((profile as any)[0])
       }
 
       return res.status(400).json({ message: 'Failed to load profile' })
@@ -54,7 +56,11 @@ export default class UserController {
   editUser = async (req: Request, res: Response) => {
     try {
       const file = req.file
-      await this.editUserUseCase.execute({ ...req.validatedBody, file })
+
+      const profileDto=req.validatedBody as UserProfileDTO
+      const userId=req.userId!
+
+      await this.editUserUseCase.execute(userId,profileDto)
 
       return res.status(200).json({ message: 'User updated Successfully' })
     } catch (error) {

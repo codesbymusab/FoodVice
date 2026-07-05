@@ -1,6 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 import { z, ZodSchema } from "zod";
 
+export const logRequest= (req: Request, res: Response, next: NextFunction) => {
+
+  console.log('Request Body',req.body)
+  console.log('Request Query',req.query)
+  next()
+
+}
 export const validateRequest = <T extends Record<string, unknown>>(
   schema: ZodSchema<T>
 ) =>
@@ -8,9 +15,10 @@ export const validateRequest = <T extends Record<string, unknown>>(
     let result;
 
     if (req.file) {
-      result = schema.safeParse({ ...req.validatedBody, file: req.file });
+
+      result = schema.safeParse({ ...req.body, file: req.file });
     } else if (req.files) {
-      result = schema.safeParse({ ...req.validatedBody, files: req.files });
+      result = schema.safeParse({ ...req.body, files: req.files });
     } else {
       result = schema.safeParse(req.body);
     }
@@ -32,7 +40,6 @@ export const validateQueryParams = <T extends Record<string, unknown>>(
 ) =>
   (req: Request, res: Response, next: NextFunction) => {
 
-    console.log(req.query)
     const result = schema.safeParse(req.query);
 
     if (result.success) {

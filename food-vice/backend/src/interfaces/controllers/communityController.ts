@@ -5,6 +5,7 @@ import JoinCommunity from '../../application/use-cases/community/JoinCommunity'
 import GetJoinedCommunities from '../../application/use-cases/community/GetJoinedCommunities'
 import GetRecommendedCommunities from '../../application/use-cases/community/GetRecommendedCommunities'
 import { CommunityDTO } from '../../application/dtos/input/Community/CommunityDTO'
+import { CommunityQueryParams } from '../../application/dtos/input/Community/CommunityQueryParams'
 
 export default class CommunityController {
   constructor(
@@ -24,18 +25,14 @@ export default class CommunityController {
   }
 
   createCommunity = async (req: Request, res: Response) => {
-    
+
     try {
-      const { name,file ,description,guidelines } = req.validatedBody as CommunityDTO 
-     
-      const validatedBody=req.validatedBody as CommunityDTO
-      const community = await this.createCommunityUseCase.execute({
-        name,
-        description,
-        guidelines,
-        file,
-        userId: req.userId!,
-      })
+
+      const userId = req.userId as string
+      const community = await this.createCommunityUseCase.execute(
+        userId
+        , req.validatedBody as CommunityDTO
+      )
       return res.status(201).json(community)
     } catch (error) {
       return res.status(400).json({ message: error instanceof Error ? error.message : 'Failed to create community' })
@@ -44,9 +41,9 @@ export default class CommunityController {
 
   getCommunities = async (req: Request, res: Response) => {
     try {
-      const communities = await this.getCommunitiesUseCase.execute({
-        name: req.validatedQuery!.name,
-      })
+      const communities = await this.getCommunitiesUseCase.execute(
+        req.validatedQuery as CommunityQueryParams
+      )
       return res.status(200).json(communities)
     } catch (error) {
       return res.status(400).json({ message: error instanceof Error ? error.message : 'Failed to load communities' })
@@ -56,7 +53,7 @@ export default class CommunityController {
   getRecommendedCommunities = async (req: Request, res: Response) => {
     try {
       const communities = await this.getRecommendedCommunitiesUseCase.execute({
-        userId: req.userId,
+        userId: req.userId as string,
       })
       return res.status(200).json(communities)
     } catch (error) {
@@ -67,8 +64,8 @@ export default class CommunityController {
   joinCommunity = async (req: Request, res: Response) => {
     try {
       const membership = await this.joinCommunityUseCase.execute({
-        userId: req.userId,
-        communityId: req.params.id,
+        userId: req.userId as string,
+        communityId: req.params.id as string,
       })
       return res.status(200).json(membership)
     } catch (error) {
@@ -79,7 +76,7 @@ export default class CommunityController {
   getJoinedCommunities = async (req: Request, res: Response) => {
     try {
       const communities = await this.getJoinedCommunitiesUseCase.execute({
-        userId:(req as any).userId,
+        userId: (req as any).userId,
       })
       return res.status(200).json(communities)
     } catch (error) {
