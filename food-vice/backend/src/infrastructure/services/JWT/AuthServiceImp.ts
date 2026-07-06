@@ -1,10 +1,10 @@
-// @ts-nocheck
+// 
 import IAuthService from '../../../application/interfaces/services/AuthService'
 const jwt = require('jsonwebtoken')
 
 class AuthServiceImpl implements IAuthService {
 
-    async getToken(userId) {
+    async getToken(userId:string) {
 
 
         return jwt.sign({ userId: userId },process.env.JWT_SECRET, {
@@ -13,7 +13,7 @@ class AuthServiceImpl implements IAuthService {
 
     }
 
-    async verifyToken(token) {
+    async verifyToken(token:string) {
 
         return jwt.verify(token,process.env.JWT_SECRET)
         

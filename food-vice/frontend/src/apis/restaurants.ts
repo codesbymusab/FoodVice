@@ -51,7 +51,7 @@ export type TrendingRestaurant =
     }
 
 
-export async function fetchTopRatedRestaurants({ userId, filters, location,cursor }: { userId: string, filters: Filter | null, location: [number, number] | null,cursor?:string }) : Promise<{data:RecommendedRestaurant[],pagination?: cursorPagination}| undefined> {
+export async function fetchTopRatedRestaurants({ userId, filters, location,cursor,limit = 15}: { userId: string, filters: Filter | null, location: [number, number] | null,cursor?:string,limit?:number }) : Promise<{data:RecommendedRestaurant[],pagination?: cursorPagination}| undefined> {
 
     const searchfilters = {
         cuisine: filters?.cuisine ?? 'All',
@@ -61,7 +61,7 @@ export async function fetchTopRatedRestaurants({ userId, filters, location,curso
     }
     try {
         const res = await fetch(
-            `${API_BASE}/restaurant/toprated?lat=${location?.[0]}&lon=${location?.[1]}&cuisine=${searchfilters.cuisine}&price=${searchfilters.price}&rating=${searchfilters.rating}&dist=${searchfilters.dist}&userId=${userId}${cursor ? `&cursor=${cursor}`:""}`,
+            `${API_BASE}/restaurant/toprated?limit=${limit}&lat=${location?.[0]}&lon=${location?.[1]}&cuisine=${searchfilters.cuisine}&price=${searchfilters.price}&rating=${searchfilters.rating}&dist=${searchfilters.dist}&userId=${userId}${cursor ? `&cursor=${cursor}`:""}}`,
             { credentials: "include" }
         );
         if (res.ok) {
@@ -126,17 +126,17 @@ export async function fetchNearbyRestaurants({ userId, filters, location }: { us
     }
 }
 
-export async function fetchRecommendedRestaurants({ userId, filters, location,cursor }: { userId: string, filters: Filter | null, location: [number, number] | null, cursor?:string })  : Promise<{data:RecommendedRestaurant[],pagination?: cursorPagination}> {
+export async function fetchRecommendedRestaurants({ userId, filters, location,cursor,limit = 5 }: { userId: string, filters: Filter | null, location: [number, number] | null, cursor?:string, limit?: number })  : Promise<{data:RecommendedRestaurant[],pagination?: cursorPagination}> {
     const searchfilters = {
         cuisine: filters?.cuisine ?? 'All',
         price: filters?.price ?? '',
         rating: filters?.rating ?? 0,
-        dist: filters?.dist ?? 10
+        dist: filters?.dist ?? 20
     }
 
     try {
         const res = await fetch(
-            `${API_BASE}/restaurant/recommended?lat=${location?.[0]}&lon=${location?.[1]}&cuisine=${searchfilters.cuisine}&price=${searchfilters.price}&rating=${searchfilters.rating}&dist=${searchfilters.dist}&userId=${userId}${cursor ? `&cursor=${cursor}`:""}`,
+            `${API_BASE}/restaurant/recommended?limit=${limit}&lat=${location?.[0]}&lon=${location?.[1]}&cuisine=${searchfilters.cuisine}&price=${searchfilters.price}&rating=${searchfilters.rating}&dist=${searchfilters.dist}&userId=${userId}${cursor ? `&cursor=${cursor}`:""}`,
             { credentials: "include" }
         );
         if (res.ok) {

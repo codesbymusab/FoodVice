@@ -13,7 +13,7 @@ export default class GetTrendingRestaurants {
 
     async execute(userId: string, query: RestListQueryParams) {
 
-        const location = [query.lat, query.lon]
+        const location = [query.lon,query.lat]
 
         const { cursor, limit } = query
 

@@ -15,7 +15,7 @@ export default class GetSimilarRestaurants {
             similarRestaurants: <any>[]
         }
 
-        const queryLocation = [query.lat, query.lon]
+        const queryLocation = [query.lon,query.lat]
 
         const search = await this.restaurantRepo.getSimilarRestaurants(restId)
 

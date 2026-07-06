@@ -1,36 +1,36 @@
-// @ts-nocheck
+// 
 import IThreadRepository from '../../../../application/interfaces/repositories/ThreadRepository'
 const Thread = require('../models/Community/ThreadModel');
 const ThreadComment = require('../models/Community/ThreadCommentModel');
 
 class ThreadRepoImpl implements IThreadRepository {
-  async create(threadData) {
+  async create(threadData:any): Promise<unknown> {
     const thread = new Thread(threadData);
     return await thread.save();
   }
 
-  async findByCommunity(communityId, searchQuery = '', topicIds = []) {
+  async findByCommunity(communityId:string, searchQuery = '', topicIds = []) {
     let query = { communityId };
 
     if (searchQuery) {
-      query.$or = [
+      (query as any).$or = [
         { title: { $regex: searchQuery, $options: 'i' } },
         { content: { $regex: searchQuery, $options: 'i' } }
       ];
     }
 
     if (topicIds.length > 0) {
-      query.topics = { $in: topicIds };
+      (query as any).topics = { $in: topicIds };
     }
 
     return await Thread.find(query).populate('uid', 'name profilePhoto').populate('media', 'url type').sort({ createdAt: -1 });
   }
 
-  async findById(id) {
+  async findById(id:string) {
     return await Thread.findById(id).populate('uid', 'name profilePhoto').populate('media', 'url type');
   }
 
-  async toggleLike(threadId, userId) {
+  async toggleLike(threadId:string, userId:string) {
     const thread = await Thread.findById(threadId);
     if (!thread) return null;
 
@@ -49,7 +49,7 @@ class ThreadRepoImpl implements IThreadRepository {
     return await thread.save();
   }
 
-  async toggleDislike(threadId, userId) {
+  async toggleDislike(threadId:string, userId:string) {
     const thread = await Thread.findById(threadId);
     if (!thread) return null;
 
@@ -68,16 +68,16 @@ class ThreadRepoImpl implements IThreadRepository {
     return await thread.save();
   }
 
-  async addComment(commentData) {
+  async addComment(commentData: any) {
     const comment = new ThreadComment(commentData);
     return await comment.save();
   }
 
-  async toggleCommentLike(commentId, userId) {
+  async toggleCommentLike(commentId: string, userId: string) {
     const comment = await ThreadComment.findById(commentId);
     if (!comment) return null;
 
-    const likeIndex = comment.likes.findIndex((id) => id.toString() === userId.toString());
+    const likeIndex = comment.likes.findIndex((id:string) => id.toString() === userId.toString());
 
     if (likeIndex === -1) {
       comment.likes.push(userId);
@@ -88,7 +88,7 @@ class ThreadRepoImpl implements IThreadRepository {
     return await comment.save();
   }
 
-  async getComments(threadId) {
+  async getComments(threadId: string) {
     return await ThreadComment.find({ threadId }).populate('uid', 'name profilePhoto').populate('media', 'url type').sort({ createdAt: 1 });
   }
 
@@ -99,14 +99,14 @@ class ThreadRepoImpl implements IThreadRepository {
     };
 
     if (searchQuery) {
-      query.$or = [
+      (query as any).$or = [
         { title: { $regex: searchQuery, $options: 'i' } },
         { content: { $regex: searchQuery, $options: 'i' } }
       ];
     }
 
     if (topicIds.length > 0) {
-      query.topics = { $in: topicIds };
+      (query as any).topics = { $in: topicIds };
     }
 
 
@@ -115,17 +115,17 @@ class ThreadRepoImpl implements IThreadRepository {
   }
 
   async getPending(limit = 20, filters = {}) {
-    const query = { status: filters.status || 'pending' };
-    if (filters.search) {
-      query.$or = [
-        { title: { $regex: filters.search, $options: 'i' } },
-        { content: { $regex: filters.search, $options: 'i' } }
+    const query = { status: (filters as any).status || 'pending' };
+    if ((filters as any).search) {
+      (query as any).$or = [
+        { title: { $regex: (filters as any).search, $options: 'i' } },
+        { content: { $regex: (filters as any).search, $options: 'i' } }
       ];
     }
     return await Thread.find(query).populate('uid', 'name profilePhoto').populate('media', 'url type').sort({ createdAt: -1 }).limit(limit).lean();
   }
 
-  async flagThread(threadId, userId, reason) {
+  async flagThread(threadId:string, userId:string, reason:string) {
     return await Thread.findByIdAndUpdate(
       threadId,
       {
@@ -141,7 +141,7 @@ class ThreadRepoImpl implements IThreadRepository {
     ).lean();
   }
 
-  async moderateThread(threadId, moderatorId, action, note) {
+  async moderateThread(threadId:string, moderatorId:string, action:string, note:string) {
     const status = action === 'approve' ? 'approved' : action === 'reject' ? 'rejected' : 'hidden';
     return await Thread.findByIdAndUpdate(
       threadId,

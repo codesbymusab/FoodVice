@@ -1,4 +1,4 @@
-// @ts-nocheck
+// 
 import IReviewRepository from '../../../../application/interfaces/repositories/ReviewRepository'
 const RatingModel = require('../models/Reviews/RatingModel')
 const RestaurantReviews = require('../models/Reviews/ReviewModel')
@@ -7,7 +7,7 @@ const mongoose = require('mongoose')
 class ReviewRepoImpl implements IReviewRepository {
 
 
-    async getCountByUserId(userId) {
+    async getCountByUserId(userId: string) {
         return await RestaurantReviews.aggregate([
             { "$match": { "uid": new mongoose.Types.ObjectId(userId) } },
             { "$count": "reviewCount" }
@@ -15,7 +15,7 @@ class ReviewRepoImpl implements IReviewRepository {
         ).exec()
     }
 
-    async getCountByRestId(restId) {
+    async getCountByRestId(restId: string) {
         return await RestaurantReviews.aggregate([
             { "$match": { "restaurantId": new mongoose.Types.ObjectId(restId) } },
             { "$count": "reviewCount" }
@@ -23,7 +23,7 @@ class ReviewRepoImpl implements IReviewRepository {
         ).exec()
     }
 
-    async getRestaurantRating(restId) {
+    async getRestaurantRating(restId: string) {
         return await RestaurantReviews.aggregate([
             { "$match": { "restaurantId": new mongoose.Types.ObjectId(restId) } },
 
@@ -53,13 +53,13 @@ class ReviewRepoImpl implements IReviewRepository {
         ).exec()
     }
 
-    async getReviews({ restId, userId, cursor, limit = 3, currentUser = false }) {
+    async getReviews({ restId, userId, cursor, limit = 3, currentUser = false }: { restId?: string; userId?: string; cursor?: any; limit?: number; currentUser?: boolean }) {
         const matchStage = {
             status: "approved"
         };
-        if (restId) matchStage.restaurantId = new mongoose.Types.ObjectId(restId);
-        if (userId && currentUser) matchStage.uid = new mongoose.Types.ObjectId(userId);
-        if (userId && !currentUser) matchStage.uid = { $ne: new mongoose.Types.ObjectId(userId) };
+        if (restId) (matchStage as any).restaurantId = new mongoose.Types.ObjectId(restId);
+        if (userId && currentUser) (matchStage as any).uid = new mongoose.Types.ObjectId(userId);
+        if (userId && !currentUser) (matchStage as any).uid = { $ne: new mongoose.Types.ObjectId(userId) };
 
         return await RestaurantReviews.aggregate([
             { $match: matchStage },
@@ -167,14 +167,14 @@ class ReviewRepoImpl implements IReviewRepository {
         ]).exec();
     }
 
-    async getRecentReviews({ userId, cursor, limit = 3, currentUser = false }) {
+    async getRecentReviews({ userId, cursor, limit = 3, currentUser = false }: { userId?: string; cursor?: any; limit?: number; currentUser?: boolean }) {
 
 
         const matchStage = {
             status: "approved"
         }
 
-        if (userId && currentUser) matchStage.uid = new mongoose.Types.ObjectId(userId);
+        if (userId && currentUser) (matchStage as any).uid = new mongoose.Types.ObjectId(userId);
 
         return await RestaurantReviews.aggregate([
             { $match: matchStage },
@@ -297,7 +297,7 @@ class ReviewRepoImpl implements IReviewRepository {
     }
 
 
-    async createReview({ userId, restaurantId, text }) {
+    async createReview({ userId, restaurantId, text }:{userId: string; restaurantId: string; text: string}) {
         return await RestaurantReviews.create({
             uid: new mongoose.Types.ObjectId(userId),
             restaurantId: new mongoose.Types.ObjectId(restaurantId),
@@ -305,7 +305,7 @@ class ReviewRepoImpl implements IReviewRepository {
         });
     }
 
-    async createRating({ reviewId, food, service, ambience, price, overall }) {
+    async createRating({ reviewId, food, service, ambience, price, overall }:{reviewId: string; food: number; service: number; ambience: number; price: number; overall: number}) {
 
         return await RatingModel.create({
             reviewId: new mongoose.Types.ObjectId(reviewId),
@@ -321,9 +321,9 @@ class ReviewRepoImpl implements IReviewRepository {
 
 
     async getPending(limit = 20, filters = {}) {
-        const query = { status: filters.status || 'pending' };
-        if (filters.search) {
-            query.text = { $regex: filters.search, $options: 'i' };
+        const query = { status: (filters as any).status || 'pending' };
+        if ((filters as any).search) {
+            (query as any).text = { $regex: (filters as any).search, $options: 'i' };
         }
         return await RestaurantReviews.find(query)
             .populate('uid', 'name username profilePhoto')
@@ -332,7 +332,7 @@ class ReviewRepoImpl implements IReviewRepository {
             .lean();
     }
 
-    async flagReview(reviewId, userId, reason) {
+    async flagReview(reviewId: string, userId: string, reason: string) {
         return await RestaurantReviews.findByIdAndUpdate(
             reviewId,
             {
@@ -348,7 +348,7 @@ class ReviewRepoImpl implements IReviewRepository {
         ).lean();
     }
 
-    async moderateReview(reviewId, moderatorId, action, note) {
+    async moderateReview(reviewId: string, moderatorId: string, action: string, note: string) {
         const status = action === 'approve' ? 'approved' : action === 'reject' ? 'rejected' : 'hidden';
         return await RestaurantReviews.findByIdAndUpdate(
             reviewId,

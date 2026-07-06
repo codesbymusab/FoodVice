@@ -1,22 +1,19 @@
-// 
-import { UserProfileDTO } from '../../../../application/dtos/input/User/UserProfileDTO'
-import { IUserRepository } from '../../../../application/interfaces/repositories/UserRepository'
 const User = require('../models/User/UserModel')
 const mongoose = require('mongoose')
 const Follow = require('../models/User/FollowModel')
 
-class UserRepoImpl implements IUserRepository {
+class UserRepoImpl {
 
-    async getByEmail(email:string) {
+    async getByEmail(email) {
 
         return await User.findOne({ email })
 
     }
-    async findById(userId:string) {
+    async findById(userId) {
         return await User.findById(userId).lean();
     }
 
-    async getById(userId:string) {
+    async getById(userId) {
 
         return await User.aggregate([
 
@@ -53,7 +50,7 @@ class UserRepoImpl implements IUserRepository {
 
     }
 
-    async getProfile(userId:string) {
+    async getProfile(userId) {
         return await User.aggregate([
             {
                 $match: {
@@ -161,17 +158,17 @@ class UserRepoImpl implements IUserRepository {
 
     }
 
-    async getUsers({ role }: { role?: string } = {}) {
+    async getUsers({ role } = {}) {
         const query = {};
-        if (role) (query as any).role = role;
+        if (role) query.role = role;
         return await User.find(query).lean();
     }
 
-    async setRole(userId:string, role:string) {
+    async setRole(userId, role) {
         return await User.findByIdAndUpdate(userId, { role }, { new: true }).lean();
     }
 
-    async banUser(userId:string, reason:string, until:Date | null) {
+    async banUser(userId, reason, until) {
         return await User.findByIdAndUpdate(
             userId,
             { banned: true, banReason: reason, banUntil: until || null },
@@ -179,7 +176,7 @@ class UserRepoImpl implements IUserRepository {
         ).lean();
     }
 
-    async unbanUser(userId:string) {
+    async unbanUser(userId) {
         return await User.findByIdAndUpdate(
             userId,
             { banned: false, banReason: null, banUntil: null },
@@ -187,20 +184,20 @@ class UserRepoImpl implements IUserRepository {
         ).lean();
     }
 
-    async create(user:unknown) {
+    async create(userId) {
 
         return await User.create(user)
 
     }
-    async update(userId: string, profile: UserProfileDTO) {
+    async update(data) {
 
-        return await User.updateOne({ _id: userId }, { $set: profile })
+        return await User.updateOne({ _id: data.userId }, { $set: data })
     }
-    async delete(user:string) {
+    async delete(userId) {
         throw new Error('Not Implemented')
     }
 
-    async follow(followerId:string, followingId:string) {
+    async follow(followerId, followingId) {
         const existing = await Follow.findOne({
             followerId: new mongoose.Types.ObjectId(followerId),
             followingId: new mongoose.Types.ObjectId(followingId),
@@ -221,4 +218,4 @@ class UserRepoImpl implements IUserRepository {
     }
 }
 
-export default UserRepoImpl
+module.exports = UserRepoImpl

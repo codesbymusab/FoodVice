@@ -21,7 +21,11 @@ export default class GetNearbyyRestaurants {
             rating: query.rating,
             dist: query.dist
         }
-        const location=[query.lat,query.lon]
+
+        console.log(filters)
+
+
+        const location=[query.lon,query.lat]
 
         const result = await this.restaurantRepo.getNearby(location, filters, userId,query.limit)
 

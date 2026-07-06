@@ -1,26 +1,26 @@
-// @ts-nocheck
+
 import ICommunityRepository from '../../../../application/interfaces/repositories/CommunityRepository'
 const Community = require('../models/Community/CommunityModel');
 const CommunityMember = require('../models/Community/CommunityMemberModel');
 const { default: mongoose } = require('mongoose');
 
 class CommunityRepoImpl implements ICommunityRepository {
-  async create(communityData) {
+  async create(communityData: unknown): Promise<unknown> {
     const community = new Community(communityData);
     return await community.save();
   }
 
-  async addMember(memberData) {
+  async addMember(memberData: unknown): Promise<unknown> {
     const member = new CommunityMember(memberData);
     return await member.save();
   }
 
-  async findByName(name) {
+  async findByName(name: string): Promise<unknown>{
     const query = name ? { name: { $regex: name, $options: 'i' } } : {};
     return await Community.find(query);
   }
   
-  async findRecommendedCommunities(userId) {
+  async findRecommendedCommunities(userId: string): Promise<unknown> {
     return await Community.aggregate([
       {
         $lookup: {
@@ -51,16 +51,16 @@ class CommunityRepoImpl implements ICommunityRepository {
     ]).exec()
   }
 
-  async findById(id) {
+  async findById(id: string): Promise<unknown> {
     return await Community.findById(id);
   }
 
-  async findJoinedByUser(userId) {
+  async findJoinedByUser(userId: string): Promise<unknown> {
     const memberships = await CommunityMember.find({ userId }).populate('communityId', 'name coverPhoto');
-    return memberships.map(m => m.communityId);
+    return memberships.map((m:any) => m.communityId);
   }
 
-  async isMember(userId, communityId) {
+  async isMember(userId: string, communityId: string): Promise<unknown> {
     const membership = await CommunityMember.findOne({ userId, communityId });
     return !!membership;
   }

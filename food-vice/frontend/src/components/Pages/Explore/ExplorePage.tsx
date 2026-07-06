@@ -71,7 +71,7 @@ function ExplorePage() {
   async function loadRecommendedRestaurants(location: [number, number] | null) {
     try {
       
-      const result= await loadRecommendedRestaurantsAPI({ userId: user?.userId ?? '', location, filters: null,cursor: recommendedPagination?.cursor})
+      const result= await loadRecommendedRestaurantsAPI({ userId: user?.userId ?? '', location, filters: filters,cursor: recommendedPagination?.cursor})
       if(recommendedPagination?.cursor && result){
         setRecommendedRestaurants([...recommendedRestaurants!,...result!.data])
       }
@@ -289,12 +289,12 @@ function ExplorePage() {
                   <div className="grid grid-cols-1 grid-rows-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 overflow-x-auto">
                     {recommendedRestaurants ?
                       topRatedRestaurants && topRatedRestaurants
-                        .filter(
-                          top =>
-                            !recommendedRestaurants.some(
-                              rec => rec._id.toString() === top._id.toString()
-                            )
-                        )
+                        // .filter(
+                        //   top =>
+                        //     // !recommendedRestaurants.some(
+                        //     //   rec => rec._id.toString() === top._id.toString()
+                        //     // )
+                        // )
                         .map(restaurant => (
                           <RestaurantCard
                             key={restaurant._id}

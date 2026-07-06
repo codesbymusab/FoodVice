@@ -1,4 +1,4 @@
-// @ts-nocheck
+// 
 import IAuthService from '../../../application/interfaces/services/AuthService'
 const {
   OAuth2Client,
@@ -6,7 +6,7 @@ const {
 
 class AuthServiceImpl implements IAuthService {
     
-    async getToken(code) {
+    async getToken(code:string) {
 
         const oAuth2Client = new OAuth2Client(
             process.env.CLIENT_ID,
@@ -21,7 +21,7 @@ class AuthServiceImpl implements IAuthService {
 
     }
 
-    async verifyToken(access_token) {
+    async verifyToken(access_token:string) {
 
 
         const res = await fetch(

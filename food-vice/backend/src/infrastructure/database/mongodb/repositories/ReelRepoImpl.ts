@@ -1,4 +1,4 @@
-// @ts-nocheck
+// 
 import IReelRepository from '../../../../application/interfaces/repositories/ReelRepository'
 const Reel = require("../models/Reels/ReelModel");
 const ReelTagModel = require("../models/Reels/ReelTagModel");
@@ -8,13 +8,14 @@ const User = require('../models/User/UserModel')
 class ReelRepoImpl implements IReelRepository {
 
   async getReels(
-    userId,
-    cursor,
+    userId: string,
+    cursor?: {
+      createdAt: number;
+    },
     limit = 5,
-    source = "all",
-    tag,
-
-  ) {
+    source = 'all',
+    tag?: string,
+  ): Promise<unknown>{
 
 
     const pipeline = [];
@@ -326,7 +327,7 @@ class ReelRepoImpl implements IReelRepository {
   }
 
 
-  async findRecent(limit = 10, userId) {
+  async findRecent( userId: string,limit = 10) {
 
     return await Reel.aggregate([
 
@@ -471,7 +472,7 @@ class ReelRepoImpl implements IReelRepository {
   }
 
 
-  async createReel({ title, description, tags, userId }) {
+  async createReel({title, description, tags=[], userId}:{title:string, description:string, tags?:string[], userId:string}): Promise<unknown> {
 
     const tagDocs = await Promise.all(
       tags.map(async tagName => {
@@ -532,11 +533,7 @@ class ReelRepoImpl implements IReelRepository {
 
 
 
-  async getById(
-
-    reelId,
-    userId
-  ) {
+  async getById(reelId: string, userId: string): Promise<unknown>{
 
 
     const pipeline = [];
@@ -724,7 +721,7 @@ class ReelRepoImpl implements IReelRepository {
     return await Reel.aggregate(pipeline);
   }
 
-  async suggestAccounts(userId, limit = 5) {
+  async suggestAccounts(userId: string, limit = 5): Promise<unknown>{
     return await User.aggregate([
       { $match: { _id: { $ne: new mongoose.Types.ObjectId(userId) } } },
       {

@@ -37,7 +37,7 @@ export default class TopicController {
   async getTopicById(req: Request, res: Response) {
     try {
       const { id } = req.params
-      const topic = await this.topicRepo.findById(id)
+      const topic = await this.topicRepo.findById(id as string)
       if (!topic) {
         return res.status(404).json({ error: 'Topic not found' })
       }

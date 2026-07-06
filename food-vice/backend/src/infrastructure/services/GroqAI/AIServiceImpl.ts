@@ -1,11 +1,11 @@
-// @ts-nocheck
+// 
 import IAIService from '../../../application/interfaces/services/AIService'
 const axios = require("axios")
 
 class GroqService implements IAIService {
  
 
-  async sendPrompt(prompt) {
+  async sendPrompt(prompt:string) {
 
     const response = await axios.post(
       "https://api.groq.com/openai/v1/chat/completions",

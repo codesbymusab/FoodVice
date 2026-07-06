@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import ILikeRepository from '../../../../application/interfaces/repositories/LikeRepository'
 const ReviewLike = require('../models/Reviews/ReviewLikeModel')
 const ReelLike = require('../models/Reels/ReelLikeModel')
@@ -7,7 +7,7 @@ const ReelCommentLike = require('../models/Reels/ReelCommentLikeModel')
 
 class LikeRepoImpl implements ILikeRepository {
 
-    async likeReview({ userId, reviewId }) {
+    async likeReview({ userId,reviewId}:{reviewId: string; userId: string }): Promise<unknown> {
 
         return await ReviewLike.create({
 
@@ -17,13 +17,13 @@ class LikeRepoImpl implements ILikeRepository {
 
     }
 
-    async unlikeReview(id) {
+    async unlikeReview(id: string): Promise<unknown> {
 
         return await ReviewLike.findByIdAndDelete({ _id: id })
 
     }
 
-    async getByReviewId({ reviewId, userId }) {
+    async getByReviewId({ reviewId, userId } : { reviewId: string; userId: string }): Promise<unknown> {
 
         return await ReviewLike.findOne({
             reviewId: reviewId,
@@ -32,7 +32,7 @@ class LikeRepoImpl implements ILikeRepository {
     }
 
 
-    async likeReel({ userId, reelId }) {
+    async likeReel({ userId, reelId } :{ userId: string; reelId: string }): Promise<unknown> {
 
         return await ReelLike.create({
 
@@ -42,13 +42,13 @@ class LikeRepoImpl implements ILikeRepository {
 
     }
 
-    async unlikeReel(id) {
+    async unlikeReel(id: string): Promise<unknown>{
 
         return await ReelLike.findByIdAndDelete({ _id: id })
 
     }
 
-    async getByReelId({ reelId, userId }) {
+    async getByReelId({ reelId, userId } : { reelId: string; userId: string }): Promise<unknown> {
 
         return await ReelLike.findOne({
             reelId: reelId,
@@ -56,7 +56,7 @@ class LikeRepoImpl implements ILikeRepository {
         })
     }
 
-    async toggleReelCommentLike(commentId, userId) {
+    async toggleReelCommentLike(commentId: string, userId: string): Promise<unknown>{
         const existing = await ReelCommentLike.findOne({ cid: commentId, uid: userId });
 
         if (existing) {

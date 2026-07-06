@@ -12,7 +12,7 @@ export default interface IReelRepository {
     tag?: string,
   ): Promise<unknown>;
 
-  findRecent(limit: any, userId: string): Promise<unknown>;
+  findRecent( userId: string , limit?: number): Promise<unknown>;
 
   createReel({title, description, tags, userId}:{title:string, description:string, tags?:string[], userId:string}): Promise<unknown>;
 
@@ -20,5 +20,5 @@ export default interface IReelRepository {
 
   getById(reelId: string, userId: string): Promise<unknown>;
 
-  suggestAccounts(userId: string, limit?: any): Promise<unknown>;
+  suggestAccounts(userId: string, limit?: number): Promise<unknown>;
 }

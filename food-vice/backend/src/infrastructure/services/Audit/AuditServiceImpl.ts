@@ -1,14 +1,13 @@
-// @ts-nocheck
 import IAuditService from '../../../application/interfaces/services/AuditService'
 import AuditLogRepoImpl from '../../database/mongodb/repositories/AuditLogRepoImpl';
 
 
 class AuditService implements IAuditService {
-  constructor() {
-    this.auditLogRepo = new AuditLogRepoImpl()
-  }
+  
+  private auditLogRepo = new AuditLogRepoImpl();
+  
 
-  async logAction(actorId, actorRole, action, targetType, targetId, metadata = {}) {
+  async logAction(actorId:string, actorRole:string, action:string, targetType:string, targetId:string, metadata = {}) {
     return await this.auditLogRepo.createLog({
       actorId,
       actorRole,

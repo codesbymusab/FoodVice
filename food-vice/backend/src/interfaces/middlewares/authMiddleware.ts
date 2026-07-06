@@ -1,6 +1,7 @@
-const AuthServiceImpl = require('../../infrastructure/services/JWT/AuthServiceImp');
+
 const UserRepoImpl = require('../../infrastructure/database/mongodb/repositories/UserRepoImpl');
 import { Request, Response, NextFunction } from "express";
+import AuthServiceImpl from "../../infrastructure/services/JWT/AuthServiceImp";
 
 export const verifyAuth = async (req:Request, res:Response, next: NextFunction) => {
   try {

@@ -86,7 +86,7 @@ export default class AIController {
       const prompt = buildPrompt('chat', {
         messages,
         location,
-        restaurants: nearbyRestaurants,
+        restaurants: nearbyRestaurants ,
       })
 
       const aiResponse = await this.groqService.sendPrompt(prompt)

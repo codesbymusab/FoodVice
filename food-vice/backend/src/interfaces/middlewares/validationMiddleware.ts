@@ -3,8 +3,6 @@ import { z, ZodSchema } from "zod";
 
 export const logRequest= (req: Request, res: Response, next: NextFunction) => {
 
-  console.log('Request Body',req.body)
-  console.log('Request Query',req.query)
   next()
 
 }

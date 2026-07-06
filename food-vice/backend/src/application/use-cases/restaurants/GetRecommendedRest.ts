@@ -22,7 +22,7 @@ export default class GetRecommendedRestaurants {
             rating: query.rating,
             dist: query.dist
         }
-        const location = [query.lat, query.lon]
+        const location = [query.lon,query.lat]
 
         const { cursor, limit } = query
 

@@ -1,4 +1,4 @@
-// @ts-nocheck
+// 
 import IRestaurantRepository from '../../../../application/interfaces/repositories/RestaurantRepository'
 const Restaurant = require('../models/Restaurant/RestaurantModel')
 const Location = require('../models/LocationModel')
@@ -13,8 +13,8 @@ const SavedRestaurant = require('../models/Saves/SavedRestaurantModel')
 
 class RestaurantRepoImpl implements IRestaurantRepository {
 
-    async getRecommended(location, filters, userId, cursor, limit = 5) {
-       
+    async getRecommended(location: [number, number], filters: any, userId: string, cursor: any, limit = 5) {
+  
         const savedCuisineIds = await SavedRestaurant.aggregate([
             { $match: { uid: new mongoose.Types.ObjectId(userId) } },
             {
@@ -32,7 +32,7 @@ class RestaurantRepoImpl implements IRestaurantRepository {
         const cuisineIds = savedCuisineIds[0]?.cuisineIds || [];
 
 
-        return await Location.aggregate([
+        const result = await Location.aggregate([
 
 
             {
@@ -41,7 +41,7 @@ class RestaurantRepoImpl implements IRestaurantRepository {
                     distanceField: "distKm",
                     spherical: true,
                     distanceMultiplier: 0.001,
-                    maxDistance: filters.distance * 1000
+                    maxDistance: filters.dist * 1000
                 }
             },
             {
@@ -169,11 +169,13 @@ class RestaurantRepoImpl implements IRestaurantRepository {
             { $sort: { avgOverall: -1, _id: 1 } },
             { $limit: limit + 1 }
         ]).exec();
+
+        return result
     }
 
 
-    async getTopRated(location, filters, userId, cursor, limit = 10) {
-  
+    async getTopRated(location: [number, number], filters: any, userId: string, cursor: any, limit = 10) {
+      
         return await Location.aggregate([
 
             {
@@ -182,7 +184,7 @@ class RestaurantRepoImpl implements IRestaurantRepository {
                     distanceField: "distKm",
                     spherical: true,
                     distanceMultiplier: 0.001,
-                    maxDistance: filters.distance * 1000
+                    maxDistance: filters.dist * 1000
                 }
             },
             {
@@ -316,7 +318,9 @@ class RestaurantRepoImpl implements IRestaurantRepository {
 
 
 
-    async getNearby(location, filters, userId, limitCount = 5) {
+    async getNearby(location: [number, number], filters: any, userId: string, limitCount = 5) {
+        
+
         return await Location.aggregate([
 
             // 1) nearby locations
@@ -326,7 +330,7 @@ class RestaurantRepoImpl implements IRestaurantRepository {
                     distanceField: "distKm",
                     spherical: true,
                     distanceMultiplier: 0.001,
-                    maxDistance: filters.distance * 1000
+                    maxDistance: filters.dist * 5000
                 }
             },
 
@@ -536,11 +540,11 @@ class RestaurantRepoImpl implements IRestaurantRepository {
 
 
 
-    async getById(id) {
+    async getById(id: string) {
         return await Restaurant.findOne({ _id: id })
     }
 
-    async getLocation(locationId, from) {
+    async getLocation(locationId: string, from: [number, number]) {
 
         if (from) {
             return await Location.aggregate([
@@ -564,13 +568,13 @@ class RestaurantRepoImpl implements IRestaurantRepository {
 
     }
 
-    async getOpeningHours(id) {
+    async getOpeningHours(id: string) {
 
         return await OpeningHours.find({ restaurantId: id })
 
     }
 
-    async getCuisines(restId) {
+    async getCuisines(restId: string) {
 
         if (restId) {
             return await RestaurantCuisines.aggregate([
@@ -595,7 +599,7 @@ class RestaurantRepoImpl implements IRestaurantRepository {
 
     }
 
-    async getLabels(id) {
+    async getLabels(id: string) {
         return await RestaurantLabels.aggregate([
             { "$match": { "restaurantId": new mongoose.Types.ObjectId(id) } },
             {
@@ -614,7 +618,7 @@ class RestaurantRepoImpl implements IRestaurantRepository {
 
 
 
-    async getSimilarRestaurants(id) {
+    async getSimilarRestaurants(id: string) {
 
         return await RestaurantCuisines.aggregate([
 
@@ -696,8 +700,8 @@ class RestaurantRepoImpl implements IRestaurantRepository {
         ]).exec()
     }
 
-    async getSavedRestaurants(userId, limit = 5) {
-        console.log('Saved')
+    async getSavedRestaurants(userId: string, limit = 5) {
+     
         return await SavedRestaurant.aggregate([
             {
                 $match: {
@@ -817,7 +821,6 @@ class RestaurantRepoImpl implements IRestaurantRepository {
 
 
     async getTrending({ userId = null, limit = 6, location = null, maxDistance = 50 }) {
-
 
         const pipeline = [];
 
@@ -1017,7 +1020,7 @@ class RestaurantRepoImpl implements IRestaurantRepository {
 
         const results = await Location.aggregate(pipeline).exec();
 
-        return results.map(r => ({
+        return results.map((r : any) => ({
             _id: r._id.toString(),
             name: r.name,
             avgOverall: r.avgOverall ?? null,
@@ -1032,13 +1035,13 @@ class RestaurantRepoImpl implements IRestaurantRepository {
 
 
 
-    async getAll(filters = {}, page, limit) {
+    async getAll(filters = {}, page: number, limit = 20) {
         const query = {};
-        if (filters.flagged) {
-            query.flags = { $exists: true, $ne: [] };
+        if ((filters as any).flagged) {
+            (query as any).flags = { $exists: true, $ne: [] };
         }
-        if (filters.search) {
-            query.name = { $regex: filters.search, $options: 'i' };
+        if ((filters as any).search) {
+            (query as any).name = { $regex: (filters as any).search, $options: 'i' };
         }
         return await Restaurant.find(query)
             .sort({ createdAt: -1 })
@@ -1047,15 +1050,15 @@ class RestaurantRepoImpl implements IRestaurantRepository {
             .lean();
     }
 
-    async createRestaurant(payload) {
+    async createRestaurant(payload: any) {
         return await Restaurant.create(payload);
     }
 
-    async updateRestaurant(id, payload) {
+    async updateRestaurant(id: string, payload: any) {
         return await Restaurant.findByIdAndUpdate(id, payload, { new: true }).lean();
     }
 
-    async deleteRestaurant(id) {
+    async deleteRestaurant(id: string) {
         return await Restaurant.findByIdAndDelete(id).lean();
     }
 }

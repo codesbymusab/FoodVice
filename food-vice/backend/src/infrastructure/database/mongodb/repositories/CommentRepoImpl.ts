@@ -1,4 +1,3 @@
-// @ts-nocheck
 import ICommentRepository from '../../../../application/interfaces/repositories/CommentRepository'
 const ReelCommentLike = require("../models/Reels/ReelCommentLikeModel");
 const ReelComment = require("../models/Reels/ReelCommentModel");
@@ -7,7 +6,7 @@ const mongoose= require('mongoose')
 class CommentRepoImpl implements ICommentRepository {
 
 
-    async findByReelWithLikes(reelId, userId, limit = 20) {
+    async findByReelWithLikes(reelId: string, userId: string, limit = 20): Promise<unknown> {
         return await ReelComment.aggregate([
             { $match: { rid: new mongoose.Types.ObjectId(reelId) } },
             { $sort: { createdAt: -1 } },
@@ -71,7 +70,7 @@ class CommentRepoImpl implements ICommentRepository {
         ]);
     }
 
-    async createComment(reelId, userId, text) {
+    async createComment(reelId: string, userId: string, text: string): Promise<unknown> {
         const comment = await ReelComment.create({
             rid: reelId,
             uid: userId,

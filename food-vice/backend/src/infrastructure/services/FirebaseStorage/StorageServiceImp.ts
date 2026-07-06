@@ -1,10 +1,10 @@
-// @ts-nocheck
+// 
 import IStorageService from '../../../application/interfaces/services/StorageService'
 const {bucket} = require('./config')
 
 class StorageServiceImpl implements IStorageService {
 
-  async uploadFile(file, folder = "uploads") {
+  async uploadFile(file: Express.Multer.File, folder = "uploads") {
     
 
     const filename = `${folder}/${Date.now()}-${file.originalname}`;
